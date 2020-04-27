@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[14]:
+# In[1]:
 
 
 import os
@@ -30,38 +30,105 @@ import fnmatch
 # from plotnine import *
 
 
-# In[15]:
+# In[2]:
 
 
 # !pip install plotnine
 
-# In[16]:
+# In[3]:
 
 
 Base_dir='/data/nandas/Combined_coexp_TFplusMetabolic/Pathway_centric/'
 os.chdir(Base_dir)
 
-# In[17]:
+# In[4]:
 
 
 output_df=pd.read_csv("../pearson_imputed_combined_total_z_normalised.dat",header=None,sep='\t')
 output_df_z=pd.read_csv("/data/nandas/Resolve_OR_genes/zpearson_imputed_combined_total_z_normalised.dat",
                         header=None,sep='\t')
-output_matrix=pd.read_csv('../pearson_matrix.csv',index_col=0,header='infer')
-
-# In[18]:
 
 
-# output_matrix = output_matrix[output_matrix.index.duplicated(keep='first')]
+# In[5]:
 
-# ## Functions
 
-# In[19]:
+output_matrix=pd.read_csv('pearson_matrix.csv',index_col=0,header='infer')
+
+# In[6]:
 
 
 output_matrix
 
-# In[40]:
+# ### Convert empty spaces if any to NaNs
+
+# In[8]:
+
+
+output_matrix=output_matrix.reindex()
+
+# ### Check if there are any NaNs
+# 
+
+# In[13]:
+
+
+output_matrix.columns[output_matrix.isnull().any()]
+
+# In[14]:
+
+
+output_matrix.columns[output_matrix.isnull().any()].tolist()
+
+# In[8]:
+
+
+# output_matrix = output_matrix[output_matrix.index.duplicated(keep='first')]
+
+# In[15]:
+
+
+missing=output_matrix[output_matrix.isnull()==True]
+
+# ### Check any missing_zero values
+
+# In[16]:
+
+
+def missing_zero_values_table(df):
+        zero_val = (df == 0.00).astype(int).sum(axis=0)
+        mis_val = df.isnull().sum()
+        mis_val_percent = 100 * df.isnull().sum() / len(df)
+        mz_table = pd.concat([zero_val, mis_val, mis_val_percent], axis=1)
+        mz_table = mz_table.rename(
+        columns = {0 : 'Zero Values', 1 : 'Missing Values', 2 : '% of Total Values'})
+        mz_table['Total Zero Missing Values'] = mz_table['Zero Values'] + mz_table['Missing Values']
+        mz_table['% Total Zero Missing Values'] = 100 * mz_table['Total Zero Missing Values'] / len(df)
+        mz_table['Data Type'] = df.dtypes
+        mz_table = mz_table[
+            mz_table.iloc[:,1] != 0].sort_values(
+        '% of Total Values', ascending=False).round(1)
+        print ("Your selected dataframe has " + str(df.shape[1]) + " columns and " + str(df.shape[0]) + " Rows.\n"      
+            "There are " + str(mz_table.shape[0]) +
+              " columns that have missing values.")
+#         mz_table.to_excel('D:/sampledata/missing_and_zero_values.xlsx', freeze_panes=(1,0), index = False)
+        return mz_table
+
+
+# In[17]:
+
+
+missing_zero_values_table(output_matrix)
+
+# ### Check if there are duplicate indices
+
+# In[22]:
+
+
+output_matrix[output_matrix.index.duplicated()]
+
+# ## Functions
+
+# In[12]:
 
 
 def wb_to_gene(matrix):
@@ -167,39 +234,44 @@ def get_cluster_gene_list(clusters,cluster_label, matrix, gene_name, folder_name
         fp.write(gene + "\n");
     fp.close();
 
-# In[21]:
+# In[13]:
 
 
 pathway_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name='Pathway2Gene')
 
-# In[22]:
+# In[14]:
 
 
 genes_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name='Gene2Pathway')
 
-# In[23]:
+# In[15]:
 
 
 genes_df
 
 
-# In[24]:
+# In[16]:
 
 
 pathway_df
 
-# In[25]:
+# In[17]:
 
 
 output_matrix = wb_to_gene(output_matrix);
 
 
-# In[35]:
+# In[18]:
 
 
 genes_df = genes_df.set_index('Gene')
 
-# In[37]:
+# In[19]:
+
+
+genes_df.shape
+
+# In[20]:
 
 
 count = 0
@@ -220,8 +292,8 @@ for index in pathway_df.index:
     
 
     drop_list = drop_list.index
+    print(drop_list.size)
     matrix = output_matrix.drop(index=drop_list, columns=drop_list, errors='ignore');
-    matrix.reindex;
     file_exist = False;
     folder_name = './{}/'.format(pathway)
     print(folder_name)
@@ -237,24 +309,4 @@ for index in pathway_df.index:
         display_the_gene_in_respective_cluster_or_subtree(matrix, gene_list, folder_name)
     break;
     
-
-# In[ ]:
-
-
-
-# In[ ]:
-
-
-pathway_df=pathway_df[['Categories/Pathways','WBID']]
-
-# In[ ]:
-
-
-pathway_df
-
-# In[ ]:
-
-
-TF=pd.read_csv("/data/nandas/Resolve_OR_genes/TF.csv",header=None,index_col=0)
-TF.drop(index=['WBGene00021924'],inplace=True)
 
