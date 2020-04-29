@@ -4,12 +4,11 @@
 # ## Importing packages
 
 # In[8]:
-
-
 import os
 import numpy as np
 import pandas as pd
 import matplotlib
+matplotlib.use('Agg')
 from matplotlib.colors import to_hex
 from matplotlib import gridspec
 import matplotlib.pyplot as plt
@@ -27,7 +26,6 @@ from networkx.drawing.nx_agraph import graphviz_layout
 import fnmatch
 import graphviz
 #import pygraphviz
-
 # from plotnine import *
 
 
@@ -267,7 +265,7 @@ def display_the_gene_in_respective_cluster_or_subtree(matrix, gene_list, folder_
 #             for _,t in text.items():
 #                 t.set_rotation('vertical')
             plt.savefig("{}{}.png".format(folder_name, gene_name))
-            plt.show()
+	    plt.close()
             
 #Get the list of genes in respective clusters    
 def get_cluster_gene_list(clusters,cluster_label, matrix, gene_name, folder_name):
