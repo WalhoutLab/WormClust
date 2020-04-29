@@ -3,7 +3,7 @@
 
 # ## Importing packages
 
-# In[67]:
+# In[8]:
 
 
 import os
@@ -33,7 +33,7 @@ import graphviz
 
 # ## Setting base directory
 
-# In[68]:
+# In[9]:
 
 
 Base_dir='/data/nandas/Combined_coexp_TFplusMetabolic/Pathway_centric/'
@@ -44,7 +44,7 @@ os.chdir(Base_dir)
 
 # ### Reading combined coexpression files
 
-# In[69]:
+# In[10]:
 
 
 output_df=pd.read_csv("../pearson_imputed_combined_total_z_normalised.dat",header=None,sep='\t')
@@ -52,7 +52,7 @@ output_df_z=pd.read_csv("/data/nandas/Resolve_OR_genes/zpearson_imputed_combined
                         header=None,sep='\t')
 
 
-# In[70]:
+# In[11]:
 
 
 output_matrix=pd.read_csv('pearson_matrix.csv',index_col=0,header='infer')
@@ -60,7 +60,7 @@ output_matrix=pd.read_csv('pearson_matrix.csv',index_col=0,header='infer')
 
 # ### Reading Gene to pathway file
 
-# In[71]:
+# In[12]:
 
 
 genes_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name='Gene2Pathway')
@@ -68,7 +68,7 @@ genes_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name='
 
 # ### Reading Pathway to Gene file
 
-# In[72]:
+# In[13]:
 
 
 pathway_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name='Pathway2Gene')
@@ -76,23 +76,30 @@ pathway_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name
 
 # ### Reading the list of Transciption factors
 
-# In[73]:
+# In[14]:
 
 
 TF=pd.read_csv("/data/nandas/Resolve_OR_genes/TF.csv",header=None,index_col=0)
 TF.drop(index=['WBGene00021924'],inplace=True)
-TF=wb_to_gene(TF)
 
 
-# In[74]:
+# ### Reading only metabolic genes
+
+# In[15]:
 
 
-TF
+metabolic_genes=pd.read_csv("/data/nandas/MEFIT/Combined/z_normalised/combined_imputed_total_corr_matrix.csv",header='infer',index_col=0)
+
+
+# In[16]:
+
+
+metabolic_genes_list=metabolic_genes.index
 
 
 # ### Convert empty spaces if any to NaNs
 
-# In[75]:
+# In[17]:
 
 
 output_matrix=output_matrix.reindex()
@@ -101,25 +108,25 @@ output_matrix=output_matrix.reindex()
 # ### Check if there are any NaNs
 # 
 
-# In[76]:
+# In[18]:
 
 
 output_matrix.columns[output_matrix.isnull().any()]
 
 
-# In[77]:
+# In[19]:
 
 
 output_matrix.columns[output_matrix.isnull().any()].tolist()
 
 
-# In[78]:
+# In[20]:
 
 
 # output_matrix = output_matrix[output_matrix.index.duplicated(keep='first')]
 
 
-# In[79]:
+# In[21]:
 
 
 missing=output_matrix[output_matrix.isnull()==True]
@@ -127,7 +134,7 @@ missing=output_matrix[output_matrix.isnull()==True]
 
 # ### Check any missing_zero values
 
-# In[80]:
+# In[22]:
 
 
 def missing_zero_values_table(df):
@@ -150,7 +157,7 @@ def missing_zero_values_table(df):
         return mz_table
 
 
-# In[81]:
+# In[23]:
 
 
 missing_zero_values_table(output_matrix)
@@ -158,7 +165,7 @@ missing_zero_values_table(output_matrix)
 
 # ### Check if there are duplicate indices
 
-# In[82]:
+# In[24]:
 
 
 output_matrix[output_matrix.index.duplicated()]
@@ -166,7 +173,7 @@ output_matrix[output_matrix.index.duplicated()]
 
 # ## Functions
 
-# In[83]:
+# In[25]:
 
 
 # Convert WBIDs to Gene symbol
@@ -257,8 +264,8 @@ def display_the_gene_in_respective_cluster_or_subtree(matrix, gene_list, folder_
             labels = dict([(i, gn) for i, gn in enumerate(matrix.index) if i in cluster1])
             text=nx.draw(G, pos, with_labels=False, arrows=False,node_size=500,node_color='#62CFB7')
             text=nx.draw_networkx_labels(G,pos,labels,font_size=14,font_weight='bold')
-            for _,t in text.items():
-                t.set_rotation('vertical')
+#             for _,t in text.items():
+#                 t.set_rotation('vertical')
             plt.savefig("{}{}.png".format(folder_name, gene_name))
             plt.show()
             
@@ -277,14 +284,15 @@ def get_cluster_gene_list(clusters,cluster_label, matrix, gene_name, folder_name
     fp.close();
 
 
-# In[84]:
+# In[26]:
 
 
 # Converting Combined Coexpression matrix with WBIDs to Gene Symbols
 output_matrix = wb_to_gene(output_matrix);
+TF=wb_to_gene(TF)
 
 
-# In[93]:
+# In[ ]:
 
 
 count = 0
@@ -307,7 +315,7 @@ for index in pathway_df.index:
     print("Size of gene list is {}".format(len(gene_list)));
     print("\n------Gene list----\n")
     print(gene_list)
-    drop_list = genes_df.drop(index=gene_list,errors='ignore')
+    drop_list = metabolic_genes.drop(index=gene_list,errors='ignore')
     drop_list = drop_list.index
     print("Size of drop list is {}".format(len(drop_list)))
     matrix = output_matrix.drop(index=drop_list, columns=drop_list, errors='ignore');
@@ -325,13 +333,7 @@ for index in pathway_df.index:
 #             break;
 #         if(not file_exist):
     display_the_gene_in_respective_cluster_or_subtree(matrix, gene_list, folder_name)
-    break;
+
     
     
-
-
-# In[ ]:
-
-
-
 
