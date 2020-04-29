@@ -253,7 +253,7 @@ def display_the_gene_in_respective_cluster_or_subtree(matrix, gene_list, folder_
                     cluster1.append(l3)
 
             # Plotting the graph
-            fig = plt.figure(figsize=(20,20))
+            fig = plt.figure(figsize=(12,12))
             nx.nx_agraph.write_dot(G,'test.dot')
 
             # same layout using matplotlib with no labels
