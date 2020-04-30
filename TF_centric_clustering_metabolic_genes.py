@@ -8,6 +8,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib
+matplotlib.use('Agg')
 from matplotlib.colors import to_hex
 from matplotlib import gridspec
 import matplotlib.pyplot as plt
