@@ -3,7 +3,9 @@
 
 # ## Importing packages
 
-# In[8]:
+# In[1]:
+
+
 import os
 import numpy as np
 import pandas as pd
@@ -26,12 +28,13 @@ from networkx.drawing.nx_agraph import graphviz_layout
 import fnmatch
 import graphviz
 #import pygraphviz
+
 # from plotnine import *
 
 
 # ## Setting base directory
 
-# In[9]:
+# In[2]:
 
 
 Base_dir='/data/nandas/Combined_coexp_TFplusMetabolic/Pathway_centric/'
@@ -42,23 +45,23 @@ os.chdir(Base_dir)
 
 # ### Reading combined coexpression files
 
-# In[10]:
+# In[3]:
 
 
-output_df=pd.read_csv("../pearson_imputed_combined_total_z_normalised.dat",header=None,sep='\t')
-output_df_z=pd.read_csv("/data/nandas/Resolve_OR_genes/zpearson_imputed_combined_total_z_normalised.dat",
-                        header=None,sep='\t')
+# output_df=pd.read_csv("../pearson_imputed_combined_total_z_normalised.dat",header=None,sep='\t')
+# output_df_z=pd.read_csv("/data/nandas/Resolve_OR_genes/zpearson_imputed_combined_total_z_normalised.dat",
+#                         header=None,sep='\t')
 
 
-# In[11]:
+# In[4]:
 
 
-output_matrix=pd.read_csv('pearson_matrix.csv',index_col=0,header='infer')
+output_matrix=pd.read_csv('/data/nandas/Combined_coexp_TFplusMetabolic/TF_metabol_matrix_genesymbol.csv',index_col=0,header='infer')
 
 
 # ### Reading Gene to pathway file
 
-# In[12]:
+# In[5]:
 
 
 genes_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name='Gene2Pathway')
@@ -66,7 +69,7 @@ genes_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name='
 
 # ### Reading Pathway to Gene file
 
-# In[13]:
+# In[6]:
 
 
 pathway_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name='Pathway2Gene')
@@ -74,22 +77,22 @@ pathway_df=pd.read_excel("PATHWAYS AND CATEGORIES APRIL 17 2020.xlsx",sheet_name
 
 # ### Reading the list of Transciption factors
 
-# In[14]:
+# In[7]:
 
 
 TF=pd.read_csv("/data/nandas/Resolve_OR_genes/TF.csv",header=None,index_col=0)
-TF.drop(index=['WBGene00021924'],inplace=True)
+TF.drop(index=['WBGene00021924','WBGene00001155'],inplace=True)
 
 
 # ### Reading only metabolic genes
 
-# In[15]:
+# In[8]:
 
 
 metabolic_genes=pd.read_csv("/data/nandas/MEFIT/Combined/z_normalised/combined_imputed_total_corr_matrix.csv",header='infer',index_col=0)
 
 
-# In[16]:
+# In[9]:
 
 
 metabolic_genes_list=metabolic_genes.index
@@ -97,7 +100,7 @@ metabolic_genes_list=metabolic_genes.index
 
 # ### Convert empty spaces if any to NaNs
 
-# In[17]:
+# In[10]:
 
 
 output_matrix=output_matrix.reindex()
@@ -106,25 +109,25 @@ output_matrix=output_matrix.reindex()
 # ### Check if there are any NaNs
 # 
 
-# In[18]:
+# In[11]:
 
 
 output_matrix.columns[output_matrix.isnull().any()]
 
 
-# In[19]:
+# In[12]:
 
 
 output_matrix.columns[output_matrix.isnull().any()].tolist()
 
 
-# In[20]:
+# In[13]:
 
 
 # output_matrix = output_matrix[output_matrix.index.duplicated(keep='first')]
 
 
-# In[21]:
+# In[14]:
 
 
 missing=output_matrix[output_matrix.isnull()==True]
@@ -132,7 +135,7 @@ missing=output_matrix[output_matrix.isnull()==True]
 
 # ### Check any missing_zero values
 
-# In[22]:
+# In[15]:
 
 
 def missing_zero_values_table(df):
@@ -155,7 +158,7 @@ def missing_zero_values_table(df):
         return mz_table
 
 
-# In[23]:
+# In[16]:
 
 
 missing_zero_values_table(output_matrix)
@@ -163,7 +166,7 @@ missing_zero_values_table(output_matrix)
 
 # ### Check if there are duplicate indices
 
-# In[24]:
+# In[17]:
 
 
 output_matrix[output_matrix.index.duplicated()]
@@ -171,7 +174,7 @@ output_matrix[output_matrix.index.duplicated()]
 
 # ## Functions
 
-# In[25]:
+# In[18]:
 
 
 # Convert WBIDs to Gene symbol
@@ -257,7 +260,7 @@ def display_the_gene_in_respective_cluster_or_subtree(matrix, gene_list, folder_
             nx.nx_agraph.write_dot(G,'test.dot')
 
             # same layout using matplotlib with no labels
-            plt.title('draw_networkx')
+            plt.title('{}'.format(folder_name))
             pos=graphviz_layout(G, prog='dot')
             labels = dict([(i, gn) for i, gn in enumerate(matrix.index) if i in cluster1])
             text=nx.draw(G, pos, with_labels=False, arrows=False,node_size=500,node_color='#62CFB7')
@@ -265,7 +268,7 @@ def display_the_gene_in_respective_cluster_or_subtree(matrix, gene_list, folder_
 #             for _,t in text.items():
 #                 t.set_rotation('vertical')
             plt.savefig("{}{}.png".format(folder_name, gene_name))
-	    plt.close()
+            plt.close()
             
 #Get the list of genes in respective clusters    
 def get_cluster_gene_list(clusters,cluster_label, matrix, gene_name, folder_name):
@@ -282,7 +285,7 @@ def get_cluster_gene_list(clusters,cluster_label, matrix, gene_name, folder_name
     fp.close();
 
 
-# In[26]:
+# In[19]:
 
 
 # Converting Combined Coexpression matrix with WBIDs to Gene Symbols
@@ -290,7 +293,7 @@ output_matrix = wb_to_gene(output_matrix);
 TF=wb_to_gene(TF)
 
 
-# In[ ]:
+# In[20]:
 
 
 count = 0
