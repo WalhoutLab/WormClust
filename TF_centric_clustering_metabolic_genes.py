@@ -15,127 +15,58 @@ from sklearn.preprocessing import StandardScaler
 from multiprocessing import Pool
 import mygene
 # import xlrd
-from goatools import go_search
+
 from dynamicTreeCut import cutreeHybrid
 from scipy.cluster.hierarchy import linkage
 from scipy.spatial.distance import pdist
 from scipy.spatial.distance import squareform
 from scipy.cluster.hierarchy import dendrogram
-from biokit.viz import corrplot
-from biokit import corrplot as cp
+#from biokit.viz import corrplot
+#from biokit import corrplot as cp
 import scipy.cluster.hierarchy as spc
 import networkx as nx
 from networkx.drawing.nx_agraph import graphviz_layout
 import fnmatch
 
+
 # In[2]:
 
 
-Base_dir='/data/nandas/Combined_coexp_TFplusMetabolic/'
+Base_dir='/data/nandas/Combined_coexp_TFplusMetabolic/TF_centric_042920/'
 os.chdir(Base_dir)
 
-# ## Reading combined coexpression of metabolic genes & TFs
 
 # In[3]:
 
 
-output_df=pd.read_csv("pearson_imputed_combined_total_z_normalised.dat",header=None,sep='\t')
-output_df_z=pd.read_csv("/data/nandas/Resolve_OR_genes/zpearson_imputed_combined_total_z_normalised.dat",header=None,sep='\t')
-
-# In[4]:
+TF_metabol_pairs=pd.read_csv("/data/nandas/Combined_coexp_TFplusMetabolic/pearson_imputed_combined_total_z_normalised.dat",header=None,sep='\t')
 
 
-output_df
-
-# ## Creating mapper dictionary WBID to gene_symbol
-
-# In[5]:
+# In[18]:
 
 
-mapper_df=pd.read_csv("/data/nandas/MEFIT/predicted/mapper_final.csv", header='infer',index_col=0)
-mapper_df
+def convertGenePairToGeneMatrix(output_df):
+    output_df.set_axis(['Gene1','Gene2','weight'], axis=1,inplace=True)
+    a = np.unique(output_df['Gene1'])
+    b = np.unique(output_df['Gene2'])
+    c = np.union1d(a,b);
+    data = np.zeros((len(c), len(c)));
+    output_matrix = pd.DataFrame(data, index=c, columns=c)
+    for values in output_df.values: 
+        output_matrix[values[0]][values[1]] = values[2];
+        output_matrix[values[1]][values[0]]=values[2];
+    np.fill_diagonal(output_matrix.values,1)
+    return output_matrix
 
-wb_to_gene = {};
-for wb in mapper_df.index:
-    wb_to_gene[wb] = mapper_df.loc[wb]['GeneID'];
-wb_to_gene
+# Convert WBIDs to Gene symbol
+def wb_to_gene(matrix):
+    mapper_df=pd.read_csv("/data/nandas/MEFIT/predicted/mapper_final.csv", header='infer',index_col=0)
+    wb_to_gene = {};
+    for wb in mapper_df.index:
+        wb_to_gene[wb] = mapper_df.loc[wb]['GeneID'];
+    matrix=matrix.rename(index=wb_to_gene,columns=wb_to_gene)
+    return matrix
 
-# ## Reading the list of Transcription Factors
-
-# In[6]:
-
-
-TF=pd.read_csv("/data/nandas/Resolve_OR_genes/TF.csv",header=None,index_col=0)
-
-# In[7]:
-
-
-TF.drop(index=['WBGene00021924'],inplace=True)
-
-# In[8]:
-
-
-TF.rename(index=wb_to_gene,inplace=True)
-
-# In[9]:
-
-
-output_df.set_axis(['Gene1','Gene2','weight'], axis=1,inplace=True)
-
-# In[10]:
-
-
-output_matrix=pd.read_csv("pearson_matrix.csv",header='infer',index_col=0)
-
-# In[11]:
-
-
-output_matrix.rename(columns=wb_to_gene,index=wb_to_gene,inplace=True)
-
-# In[12]:
-
-
-output_matrix['hphd-1'].sort_values(ascending=False)
-
-# In[13]:
-
-
-intersected_list = list(set(output_matrix.index).intersection(set(TF.index)))
-print(len(intersected_list))
-
-TF_final = TF.loc[intersected_list]
-# TF_final = TF_final.drop_duplicates()
-TF_final.reset_index(inplace=True)
-
-# In[14]:
-
-
-TF_final.drop_duplicates(inplace=True)
-
-# In[15]:
-
-
-TF_final
-
-# In[16]:
-
-
-TF_final.set_index(0, inplace=True)
-
-# In[17]:
-
-
-# def clustering(matrix):
-#     print("Starting clustering ")
-#     edist=np.ones(matrix.shape)-matrix
-#     dist=edist
-#     link = spc.linkage(squareform(dist), method='average')
-#     clusters = cutreeHybrid(link, squareform(dist), deepSplit=3,minClusterSize=7)
-#     #print(link)
-#     #print(clusters)
-#     print("Ending")
-#     return clusters;
-    
 def get_node_leafs(Z):
     """
     For each node in a linkage matrix Z return the flat leafs
@@ -171,7 +102,7 @@ def find_merge(l1, Z):
 def calculate_dist_matrix(matrix):
     dist=np.ones(matrix.shape)-matrix
     link = spc.linkage(squareform(dist), method='average')
-    clusters = cutreeHybrid(link, squareform(dist), deepSplit=4,minClusterSize=7)
+    clusters = cutreeHybrid(link, squareform(dist), deepSplit=4,minClusterSize=5)
     return clusters, link
     
 def display_the_gene_in_respective_cluster_or_subtree(matrix, gene_name):
@@ -205,13 +136,13 @@ def display_the_gene_in_respective_cluster_or_subtree(matrix, gene_name):
     nx.nx_agraph.write_dot(G,'test.dot')
 
     # same layout using matplotlib with no labels
-    plt.title('draw_networkx')
+    plt.title('{}'.format(gene_name))
     pos=graphviz_layout(G, prog='dot')
     labels = dict([(i, gn) for i, gn in enumerate(matrix.index) if i in cluster1])
-    text=nx.draw(G, pos, with_labels=False, arrows=False,node_size=500,node_color='r')
-    text=nx.draw_networkx_labels(G,pos,labels,font_size=10,font_weight='bold',rotation='vertical')
-    for _,t in text.items():
-        t.set_rotation('vertical')
+    text=nx.draw(G, pos, with_labels=False, arrows=False,node_size=500,node_color='#62CFB7')
+    text=nx.draw_networkx_labels(G,pos,labels,font_size=14,font_weight='bold')
+#     for _,t in text.items():
+#         t.set_rotation('vertical')
     plt.savefig("{}.png".format(gene_name))
     plt.show()
     
@@ -220,37 +151,112 @@ def get_cluster_gene_list(clusters,cluster_label, matrix, gene_name):
 
     indices = [i for i, x in enumerate(clusters['labels']) if x == cluster_label]
     cluster_gene_list = matrix.index[indices];
-    fp = open('TF_clusters/genes_list/{}_cluster_{}_gene_list.txt'.format(gene_name, cluster_label), 'w')
+    fp = open('TF_clusters/{}_cluster_{}_gene_list.txt'.format(gene_name, cluster_label), 'w')
     print(cluster_gene_list)
     for gene in cluster_gene_list:
         fp.write(gene + "\n");
     fp.close();
 
-# In[25]:
+
+# In[5]:
 
 
+TF_metabol_matrix=convertGenePairToGeneMatrix(TF_metabol_pairs)
 
 
-# In[24]:
+# In[ ]:
 
 
-# output_matrix
-
-clusters, link = calculate_dist_matrix(output_matrix);
-
-# In[19]:
+np.fill_diagonal(TF_metabol_matrix.values,1)
 
 
-# gene_name ='nhr-90'
-# index = list(output_matrix.index).index(gene_name);
-# cluster_label = clusters['labels'][index]
-# get_cluster_gene_list(clusters, cluster_label, output_matrix, gene_name)
-# for i in range(0,200):
-#     tf = TF_final.index[i];
-#     print("{}---{}".format(i,tf));
+# In[ ]:
 
 
-# In[20]:
+TF_metabol_matrix.to_csv("TF_metabol_matrix.csv")
+
+
+# In[ ]:
+
+
+TF_metabol_matrix=wb_to_gene(TF_metabol_matrix)
+
+
+# In[28]:
+
+
+TF_metabol_matrix.to_csv("/data/nandas/Combined_coexp_TFplusMetabolic/TF_metabol_matrix_genesymbol.csv")
+
+
+# ## Reading the combined coexpression matrix and list of TFs
+
+# In[29]:
+
+
+TF_metabol_matrix=pd.read_csv("/data/nandas/Combined_coexp_TFplusMetabolic/TF_metabol_matrix_genesymbol.csv",index_col=0)
+
+
+# In[30]:
+
+
+TF_metabol_matrix.shape
+
+
+# In[32]:
+
+
+TF=pd.read_csv("/data/nandas/Resolve_OR_genes/TF.csv",header=None,index_col=0)
+TF.drop(index=['WBGene00021924'],inplace=True)
+
+
+# In[33]:
+
+
+TF=wb_to_gene(TF)
+
+
+# In[34]:
+
+
+# dropped ech-6 from the list of TFs
+TF.drop(index=['ech-6'],inplace=True)
+
+
+# In[35]:
+
+
+# Get the list of TFs whose coexpression values are present in the combined matrix
+intersected_list = list(set(TF_metabol_matrix.index).intersection(set(TF.index)))
+print(len(intersected_list))
+
+TF_final = TF.loc[intersected_list]
+# TF_final = TF_final.drop_duplicates()
+TF_final.reset_index(inplace=True)
+TF_final.drop_duplicates(inplace=True)
+TF_final.set_index(0, inplace=True)
+TF_final.shape
+
+
+# In[43]:
+
+
+set(TF_metabol_matrix.columns).symmetric_difference(TF_metabol_matrix.index)
+
+
+# In[48]:
+
+
+TF_metabol_matrix.rename(columns={'gei-3.1':'gei-3'},inplace=True)
+
+
+# In[56]:
+
+
+TF_metabol_matrix.drop_duplicates(keep='first',inplace=True)
+TF_metabol_matrix.transpose().drop_duplicates(keep='first',inplace=True)
+
+
+# In[60]:
 
 
 count = 0
@@ -264,98 +270,15 @@ for tf in TF_final.index:
     print("tfvalue: {}".format(tf))
     drop_list = TF_final.drop(index=tf)
     drop_list = drop_list.index
-    matrix = output_matrix.drop(index=drop_list, columns=drop_list);
+    print(len(drop_list))
+    print(TF_metabol_matrix.shape)
+    matrix = TF_metabol_matrix.drop(index=drop_list, columns=drop_list);
+    print(matrix.shape)
     file_exist = False;
-    for file in os.listdir('./TF_clusters/genes_list/'):
+    for file in os.listdir('./TF_clusters/'):
         if fnmatch.fnmatch(file, "{}_cluster_*".format(tf)):
             print("File: {} found, skipping!!!".format(file))
             file_exist = True;
     if(not file_exist):
         display_the_gene_in_respective_cluster_or_subtree(matrix, tf)
-    
-
-# In[21]:
-
-
-# default = "#808080"   # Unclustered gray
-# n_clusters = len(np.unique(clusters['labels']))
-
-# colors = plt.cm.jet(np.linspace(0, 1, n_clusters)) # Create colors from colormap
-
-# leaf_color_dict = {}
-
-# for i, l in enumerate(clusters['labels']):
-#     if l:
-#         leaf_color_dict[i] = to_hex(colors[l-1])
-#     else:
-#         leaf_color_dict[i] = default
-# # notes:
-# # * rows in Z correspond to "inverted U" links that connect clusters
-# # * rows are ordered by increasing distance
-# # * if the colors of the connected clusters match, use that color for link
-# link_cols = {}
-# for i, i12 in enumerate(link[:,:2].astype(int)):
-#     c1, c2 = (link_cols[x] if x > len(link) else leaf_color_dict[x] for x in i12)
-#     link_cols[i+1+len(link)] = c1 if np.all(c1 == c2) else default
-
-# In[22]:
-
-
-# ## Plotting dendogram
-# fig = plt.figure(figsize=(15, 8))
-# gs  = gridspec.GridSpec(1, 2, width_ratios=[.5, 1])
-
-# ax1 = plt.subplot(gs[0])
-# ax2 = plt.subplot(gs[1])
-# ax1.axis('off')
-# dend=dendrogram(link,ax=ax1, orientation='left', no_labels=True, link_color_func=lambda x: link_cols[x])
-
-# heatmap = ax2.pcolor(dist.values[dend['leaves']].T[dend['leaves']].T)
-# ax1.yaxis.tick_right()
-
-# #for s, si in zip(onecc, onecc_ndx): 
-#   #  s=s.strip()
-#   #  for i, l in enumerate(dend['leaves']):
-        
-#      #   if l == si:
-#      #       if s == 'dao-3':
-#          #       ax1.scatter(0.4,i*10,s=80, marker='>', color='blue', edgecolor='blue', linewidth=3, zorder=10)
-#         #    elif s == 'metr-1':
-#                # ax1.scatter(0.4,i*10,s=80, marker='>', color='midnightblue', edgecolor='midnightblue', linewidth=3, zorder=10)
-#                 #ax.text(-1,i*10,'${}$'.format(s), color='Black', fontsize=28, zorder=10)
-#           #  elif s == 'sams-5' or s == 'dhfr-1':
-#             #    ax1.scatter(0.4,i*10,s=80, marker='>', color='red', edgecolor='red', linewidth=3, zorder=10)
-#     #        elif s == 'sams-1'or s=='ahcy-1':
-#      #           ax1.scatter(0.4,i*10,s=80, marker='>', color='purple', edgecolor='purple', linewidth=3, zorder=10)
-#          #   else:
-#        #         print(i,s)
-#            #     ax1.scatter(0.4,i*10,s=100, marker='>', color='cyan', edgecolor='cyan', linewidth=3, zorder=10)
-#                 #ax.text(-1,i*10,'${}$'.format(s), color='Black', fontsize=28, zorder=10)
-                
-                
-# #Place textbox with cluster labels
-# #for i, color in enumerate(colors):
-#     #txt = ax1.text(0.0, 1-(0.1*i), 'cluster {}'.format(i+1), transform=ax.transAxes, 
-#      #            **{'color': color, 'fontsize': 26})
-#     #txt.set_path_effects([PathEffects.withStroke(linewidth=1, foreground='k')])
-# ax1.set_yticklabels([''])
-# ax2.set_xticklabels([''])
-# ax2.set_yticklabels([''])
-# cbar = plt.colorbar(heatmap)
-# cbar.set_label('Distance', fontsize=24)
-# cbar.set_ticks(np.arange(0,1.3,0.1))
-# cbar.set_ticklabels(['{:.1f}'.format(x) for x in np.arange(0,1.3,0.1)])
-# cbar.ax.tick_params(labelsize=20)
-# #plt.tight_layout()
-
-# ax1.set_ylabel("Genes",fontsize=28)
-# ax1.set_xlabel("Distance",fontsize=28)
-# #xticklabels=['']*len(dend['leaves'])
-# #ax.set_xticklabels(xticklabels,fontsize=28)
-# gs.update(wspace=0.001, hspace=0.)
-# #plt.tight_layout()
-# plt.savefig('Combinedcoexp_TF_metabolic_032920.png')
-
-# In[23]:
-
 
