@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 # coding: utf-8
 
 # In[1]:
@@ -62,10 +62,10 @@ np.fill_diagonal(output_df.values,1)
 x=convertGenePairToGeneMatrix(x)
 
 
-# In[44]:
+# In[56]:
 
 
-x['acdh-1']['alh-8']
+x['check_string'] = x.apply(lambda row: ''.join(sorted([row['GeneA'], row['GeneB']])), axis=1)
 
 
 # In[50]:
@@ -90,6 +90,8 @@ def Resample(x):
     x = x.to_frame('Correlation').reset_index()
     x.dropna(inplace=True)
     x = x[x.GeneA!=x.GeneB]
+    x['check_string'] = x.apply(lambda row: ''.join(sorted([row['GeneA'], row['GeneB']])), axis=1)
+    result.drop_duplicates('check_string',inplace=True)
     y=x.Correlation.sample(n=x.shape[0],replace=True)
     y=pd.DataFrame(y);
     y.reset_index(inplace=True)
@@ -407,7 +409,7 @@ NoOfClusters_original
 # PlotClusteredHeatMap(clusters=clusters,link=link,dist=dist)
 
 
-# In[ ]:
+# In[55]:
 
 
 n = sys.argv[0];
@@ -482,7 +484,6 @@ for n in range(1,1001):
 Number_of_clusters.to_csv("Number_of_clusters.csv")   
 New_df.to_csv('Gene_shunt_cluster_check.csv')
 New_df2.to_csv('Gene_MetSAM_cluster_check.csv')
-
 
 
 # In[ ]:
