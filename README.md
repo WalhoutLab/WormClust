@@ -9,5 +9,12 @@ We developed a computational pipeline to unravel transcriptional regulation of m
     c) Across compendium of expression datasets - Using CV 
 
   ## **Features**
-  ## **Requirements**
   
+  
+  ## **Requirements**
+  numpy (>=1.12.1)
+  scipy (>=0.19.0)
+  pandas (>=0.20.1)
+  matplotlib (>=2.0.2)
+  scikit-learn (>=0.18.1)
+  seaborn
