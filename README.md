@@ -28,4 +28,6 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   ## **Contributions**
   Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda or Safak Yilmaz
   
+  ## **Project link**
+  
   
