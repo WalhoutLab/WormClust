@@ -25,4 +25,7 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   scikit-learn (>=0.18.1)
   seaborn
   
+  ## **Contributions**
+  Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda or Safak Yilmaz
+  
   
