@@ -7,6 +7,12 @@ We developed a computational pipeline to unravel transcriptional regulation of m
     a) During Development- Using Variation Score (VS)
     b) Across tissues- Using Coefficient of Variation (CV)
     c) Across compendium of expression datasets - Using CV 
+    
+  ### 2) Finding prevalence of transcriptional regulation at pathway level
+    a) Supervised approach
+    b) Unsupervised approach
+    
+  
 
   ## **Features**
   
@@ -18,3 +24,5 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   matplotlib (>=2.0.2)
   scikit-learn (>=0.18.1)
   seaborn
+  
+  
