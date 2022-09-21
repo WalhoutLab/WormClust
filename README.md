@@ -12,6 +12,10 @@ We developed a computational pipeline to unravel transcriptional regulation of m
     a) Supervised approach
     b) Unsupervised approach
     
+  ### 3) Finding activation/ repression conditions of metabolic sub-pathways
+  ### 4) Associating all C.elegans genes to metabolic (sub)pathways
+  
+  
   
 
   ## **Features**
