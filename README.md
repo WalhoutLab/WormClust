@@ -34,7 +34,7 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   
   ## **Contact or Contributions**
   Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda or Safak Yilmaz.
-  Project link: https://github.com/shivani710/coflux_coexpression
+  Project link: https://github.com/WalhoutLab/WormClust
   
 
   
