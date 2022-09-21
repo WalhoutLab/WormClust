@@ -17,7 +17,7 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   ## **Features**
 ### 1) Written in python
 ### 2) Provides WormClust- an online tool to evaluate the association of a given gene with the metabolic network based on similarities in gene expression, according to Nanda et al., 2022 (in review). 
-### 3) 
+
   
   
   ## **Requirements**
