@@ -39,9 +39,5 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   
   ## **Contact or Contributions**
   Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda(shivani.nanda@umassmed.edu) or Safak Yilmaz(LutfuSSafak.Yilmaz@umassmed.edu).
-  Project link: https://github.com/WalhoutLab/WormClust
-  
-
-  
-  
+  \nProject link: https://github.com/WalhoutLab/WormClust
   
