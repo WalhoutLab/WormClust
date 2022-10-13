@@ -25,11 +25,11 @@ We developed a computational pipeline to unravel transcriptional regulation of m
 
   
   ## **Requirements**
-  numpy (>=1.12.1)
-  scipy (>=0.19.0)
-  pandas (>=0.20.1)
-  matplotlib (>=2.0.2)
-  scikit-learn (>=0.18.1)
+  numpy (>=1.12.1)<br/>
+  scipy (>=0.19.0)<br/>
+  pandas (>=0.20.1)<br/>
+  matplotlib (>=2.0.2)<br/>
+  scikit-learn (>=0.18.1)<br/>
   seaborn
   
   
@@ -38,6 +38,5 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   
   
   ## **Contact or Contributions**
-  Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda(shivani.nanda@umassmed.edu) or Safak Yilmaz(LutfuSSafak.Yilmaz@umassmed.edu).
-  \nProject link: https://github.com/WalhoutLab/WormClust
+  Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda(shivani.nanda@umassmed.edu) or Safak Yilmaz(LutfuSSafak.Yilmaz@umassmed.edu).<br/>Project link: https://github.com/WalhoutLab/WormClust
   
