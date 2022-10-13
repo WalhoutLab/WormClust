@@ -23,7 +23,6 @@ We developed a computational pipeline to unravel transcriptional regulation of m
 ### 2) Provides WormClust- an online tool to evaluate the association of a given gene with the metabolic network based on similarities in gene expression, according to Nanda et al., 2022 (in review). 
 
   
-  
   ## **Requirements**
   numpy (>=1.12.1)
   scipy (>=0.19.0)
@@ -32,8 +31,13 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   scikit-learn (>=0.18.1)
   seaborn
   
+  
+  ## **Authors**
+  Shivani Nanda- https://github.com/shivani710
+  
+  
   ## **Contact or Contributions**
-  Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda or Safak Yilmaz.
+  Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda(shivani.nanda@umassmed.edu) or Safak Yilmaz(LutfuSSafak.Yilmaz@umassmed.edu).
   Project link: https://github.com/WalhoutLab/WormClust
   
 
