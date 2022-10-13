@@ -13,11 +13,11 @@ We developed a computational pipeline to unravel transcriptional regulation of m
     b) Unsupervised approach
     
   ### 3) Finding activation/ repression conditions of metabolic sub-pathways
-  ### 4) Associating all *C.elegans* genes to metabolic (sub)pathways
+  ### 4) WormClust: a web application that enables gene-by-gene query of all *C.elegans* genes to associate them to metabolic (sub)-pathways. 
+    a)For all iCEL genes that are part of metabolic network model, obtain a clustered heatmap of the query gene with other closely associated metabolic network genes based on coflux and coexpression
+    b) For all non-iCEL genes, find the pathway enrichment to closely associated metabolic network model genes
   
   
-  
-
   ## **Features**
 ### 1) Written in python
 ### 2) Provides WormClust- an online tool to evaluate the association of a given gene with the metabolic network based on similarities in gene expression, according to Nanda et al., 2022 (in review). 
