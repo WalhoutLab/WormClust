@@ -1,4 +1,6 @@
 # <b>Systems-level transcriptional regulation of metabolism in *C.elegans*
+
+ ## ** Warning: This repository is still under development. There might be missing files as we are in the process of organising and cleaning up codes.
   ## **Introduction**
 
 We developed a computational pipeline to unravel transcriptional regulation of metabolism in *C.elegans* at a systems-level. It is written mainly in Python, with parts written in MATLAB and shell script. It has been developed for a development dataset, tissue dataset and a compendium of 177 expression datasets. However, this pipeline is applicable to any expression dataset- whether RNA-Seq or microarray. It consists of following major parts:
@@ -25,12 +27,7 @@ We developed a computational pipeline to unravel transcriptional regulation of m
 
   
   ## **Requirements**
-  numpy (>=1.12.1)<br/>
-  scipy (>=0.19.0)<br/>
-  pandas (>=0.20.1)<br/>
-  matplotlib (>=2.0.2)<br/>
-  scikit-learn (>=0.18.1)<br/>
-  seaborn
+  Please find attached the requirements.txt file.
   
   
   ## **Authors**
@@ -38,5 +35,7 @@ We developed a computational pipeline to unravel transcriptional regulation of m
   
   
   ## **Contact or Contributions**
-  Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda(shivani.nanda@umassmed.edu) or Safak Yilmaz(LutfuSSafak.Yilmaz@umassmed.edu).<br/>Project link: https://github.com/WalhoutLab/WormClust
+  Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda(shivani.nanda@umassmed.edu) or Safak Yilmaz(LutfuSSafak.Yilmaz@umassmed.edu).<br/>Project link: https://github.com/WalhoutLab/WormClust 
+  <br> WormClust web server link- http://wormflux.umassmed.edu/WormClust/wormclust.php
+  
   
