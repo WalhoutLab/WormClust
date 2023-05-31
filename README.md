@@ -38,7 +38,7 @@ Our pipeline comprises the following key modules:
 
 * **Python-Centric:** Our pipeline is primarily written in Python, ensuring high readability and maintainability.
 * **Broad Applicability:** The methodologies implemented in this pipeline can be extrapolated to any organism for which large gene expression profile compendia and high-quality metabolic network models are available, including humans.
-* **Interactive Web Tool - WormClust:** This feature enables users to assess the association of a specific gene with the metabolic network based on similarities in gene expression. It is consistent with the methodology proposed by Nanda et al., 2022 (under review).
+* **Interactive Web Tool - WormClust:** This feature enables users to assess the association of a specific gene with the metabolic network based on similarities in gene expression. It is consistent with the methodology proposed by [Nanda et al., 2023](https://www.embopress.org/doi/full/10.15252/msb.202211443).
 
 ## Requirements
 
