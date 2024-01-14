@@ -25,7 +25,7 @@ Our pipeline comprises the following key modules:
 * Across a Compendium of Expression Datasets - Utilizing CV 
 
 ### 2) Identifying the Prevalence of Transcriptional Regulation at the Pathway Level
-* Supervised Approach
+* [Supervised Approach] (https://github.com/WalhoutLab/WormClust/blob/master/2_a_SupervisedApproach/Supervised_Analysis.md)
 * [Unsupervised Approach](https://github.com/WalhoutLab/WormClust/blob/master/2_b_UnsupervisedApproach/Unsupervised_Analysis.md)
 
 ### 3) Uncovering Activation/Repression Conditions of Metabolic Sub-Pathways
@@ -52,6 +52,9 @@ The repository can be cloned and the dependencies installed as follows:
 1. Clone the repository: `git clone https://github.com/WalhoutLab/WormClust.git`
 2. Navigate to the cloned directory: `cd WormClust`
 3. Install the required dependencies: `pip install -r requirements.txt`
+4. Alternatively, Create a Conda environment from the requirements.txt file: `conda create --name myenv --file requirements.txt`
+5. Activate the Conda environment: `conda activate myenv`
+   
 
 ## Authors
 
