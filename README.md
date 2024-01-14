@@ -26,7 +26,7 @@ Our pipeline comprises the following key modules:
 
 ### 2) Identifying the Prevalence of Transcriptional Regulation at the Pathway Level
 * Supervised Approach
-* Unsupervised Approach
+* [Unsupervised Approach]
 
 ### 3) Uncovering Activation/Repression Conditions of Metabolic Sub-Pathways
 
