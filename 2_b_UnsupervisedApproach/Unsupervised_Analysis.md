@@ -1,36 +1,37 @@
 # Unsupervised Analysis using Dynamic Tree Clustering and evaluating cluster quality through Silhouette Score
 
+
 This repository contains a Jupyter Notebook for performing unsupervised analysis on a dataset, primarily focusing on clustering quality evaluation using the Silhouette Score. The notebook includes a comprehensive set of Python scripts for data processing, clustering, and result visualization.
 
 ## Getting Started
 
-To run this Jupyter Notebook, you need to replicate the environment using the `requirements.txt` file available in the same GitHub folder. The `requirements.txt` file lists all the Python packages and their versions required for running the notebook.
+To run this Jupyter Notebook, create a new Conda environment using the `requirements.txt` file located in the same GitHub folder. This file lists all the necessary Python packages and their versions.
 
 ### Prerequisites
 
+- Anaconda or Miniconda
 - Python 3.x
-- Jupyter Notebook
-- Packages listed in `requirements.txt`
 
 ### Installation
 
-1. **Clone the repository:**
+1. **Download the repository:**
 
-    ```bash
-    git clone <repository-url>
-    ```
+   Download the ZIP file of the repository and extract it, or copy the files to your working directory.
 
-2. **Navigate to the cloned directory:**
+2. **Create a new Conda environment:**
 
-    ```bash
-    cd <repository-name>
-    ```
+   Navigate to the directory containing the `requirements.txt` file and create a new Conda environment:
 
-3. **Install required packages:**
+   ```bash
+   conda create --name <env-name> --file requirements.txt
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+### Activate the Conda environment:
+
+Activate the new environment:
+
+```bash
+conda activate <env-name>
+
 
 ## Running the Notebook
 
