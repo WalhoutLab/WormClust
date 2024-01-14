@@ -18,6 +18,7 @@ colorlog==4.0.2
 colormap==1.0.2
 cryptography==2.3.1
 cycler==0.10.0
+cyordereddict==1.0.0
 dataclasses==0.8
 decorator==4.3.0
 descartes==1.1.0
@@ -102,6 +103,7 @@ pytest==5.4.3
 python-dateutil==2.7.5
 python-igraph==0.7.1.post6
 pytz==2018.7
+PyVCF==0.6.8
 PyYAML==5.1
 pyzmq==17.1.2
 qtconsole==4.4.2
@@ -131,6 +133,7 @@ tqdm==4.43.0
 traitlets==4.3.2
 typing-extensions==4.1.1
 urllib3==1.23
+vcfpy==0.13.6
 virtualenv-clone==0.5.4
 wcwidth==0.1.7
 webencodings==0.5.1
