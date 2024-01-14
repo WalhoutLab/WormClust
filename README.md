@@ -26,8 +26,8 @@ Our pipeline comprises the following key modules:
 * [Enrichment and depletion analysis of regulated genes](https://github.com/WalhoutLab/WormClust/tree/master/1_d_EnrichmentDepletionAnalysis/)
 
 ### 2) Identifying the Prevalence of Transcriptional Regulation at the Pathway Level
-* [Supervised Approach](https://github.com/WalhoutLab/WormClust/blob/master/2_a_SupervisedApproach/README.md)
-* [Unsupervised Approach](https://github.com/WalhoutLab/WormClust/blob/master/2_b_UnsupervisedApproach/README.md)
+* [Supervised Approach](https://github.com/WalhoutLab/WormClust/blob/master/2_a_SupervisedApproach/)
+* [Unsupervised Approach](https://github.com/WalhoutLab/WormClust/blob/master/2_b_UnsupervisedApproach/)
 
 ### 3) Uncovering Activation/Repression Conditions of Metabolic Sub-Pathways
 
