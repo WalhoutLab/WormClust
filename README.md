@@ -23,7 +23,7 @@ Our pipeline comprises the following key modules:
 * During Development - Utilizing Variation Score (VS)
 * Across Tissues - Utilizing Coefficient of Variation (CV)
 * Across a Compendium of Expression Datasets - Utilizing CV
-* [Enrichment and depletion analysis of regulated genes](https://github.com/WalhoutLab/WormClust/tree/master/1_d_EnrichmentDepletionAnalysis/README.md)
+* [Enrichment and depletion analysis of regulated genes](https://github.com/WalhoutLab/WormClust/tree/master/1_d_EnrichmentDepletionAnalysis/)
 
 ### 2) Identifying the Prevalence of Transcriptional Regulation at the Pathway Level
 * [Supervised Approach](https://github.com/WalhoutLab/WormClust/blob/master/2_a_SupervisedApproach/README.md)
