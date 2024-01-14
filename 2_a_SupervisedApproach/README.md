@@ -13,6 +13,8 @@ The code is written in Python and requires the following libraries:
 - seaborn
 - numpy
 
+  *** Please create custom virtual or conda environment using requirements.txt since this requires specific versions of libraries.
+
 Jupyter Notebooks are also provided for interactive analysis:
 
 - `Overall_Pathway_Enrichment_mean_033122.ipynb`: For pathway enrichment analysis using WormPaths.
