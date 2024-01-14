@@ -52,6 +52,8 @@ The repository can be cloned and the dependencies installed as follows:
 1. Clone the repository: `git clone https://github.com/WalhoutLab/WormClust.git`
 2. Navigate to the cloned directory: `cd WormClust`
 3. Install the required dependencies: `pip install -r requirements.txt`
+4. Alternatively, Create a Conda environment from the requirements.txt file: ```shell conda create --name myenv --file requirements.txt
+
 
 ## Authors
 
