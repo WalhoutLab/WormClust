@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 # coding: utf-8
 
 # ## Import modules
@@ -54,23 +54,11 @@ Base_dir='/data/nandas/FinalFileShivani/Unsupervised/'
 os.chdir(Base_dir)
 
 
-# In[3]:
-
-
-#!cp /data/nandas/Coflux_matrix/FluxRed_061722/Coflux_061922.csv RxnFluxMatrix.csv
-
-
-# In[4]:
-
-
-#!ls
-
-
 # ## Reading files
 
 # ### Reading rxn X rxn coflux matrix
 
-# In[5]:
+# In[3]:
 
 
 Rxn_Flux_Matrix=pd.read_csv("RxnFluxMatrix.csv",index_col=0)
@@ -78,13 +66,13 @@ Rxn_Flux_Matrix=pd.read_csv("RxnFluxMatrix.csv",index_col=0)
 
 # ### Sanity check of matrix
 
-# In[6]:
+# In[5]:
 
 
 Rxn_Flux_Matrix.max().max()
 
 
-# In[7]:
+# In[6]:
 
 
 Rxn_Flux_Matrix.loc['RM04432'].sort_values(ascending=False)[0:10]
@@ -92,7 +80,7 @@ Rxn_Flux_Matrix.loc['RM04432'].sort_values(ascending=False)[0:10]
 
 # ## Important functions
 
-# In[8]:
+# In[7]:
 
 
 def SymmetricRxnFluxMatrix(Rxn_flux_matrix):
@@ -532,293 +520,201 @@ def ConvertPairsToMatrix_SN(bayesian_metabol_df):
     return output_df
 
 
-# In[9]:
+# ### Ensuring Symmetry of Reaction Flux Matrix
+# 
+# #### Description:
+# - This code segment ensures the symmetry of a reaction flux matrix.
+# 
+# #### Code Explanation:
+# 
+# 1. **SymmetricRxnFluxMatrix Function:**
+#    - The `SymmetricRxnFluxMatrix` function takes a reaction flux matrix as input.
+#    - It ensures that each pair of elements (i, j) and (j, i) in the matrix are equal by setting both elements to the maximum of the two.
+#    - The function iterates through the matrix elements and checks if `Rxn_flux_matrix.loc[i][j]` is less than `Rxn_flux_matrix.loc[j][i]`. If true, it sets both elements to `Rxn_flux_matrix.loc[j][i]`. Otherwise, it sets both elements to `Rxn_flux_matrix.loc[i][j]`.
+#    - The modified reaction flux matrix is returned, where each element (i, j) is equal to (j, i).
+# 
+# #### Objective of This Code Segment:
+# - This code segment ensures that the reaction flux matrix is symmetric, which is important for certain calculations and analyses in systems biology.
+# 
+# 
+# 
+
+# In[ ]:
 
 
+Rxn_Flux_Matrix=SymmetricRxnFluxMatrix(Rxn_Flux_Matrix)
 
-# Rxn_Flux_Matrix=SymmetricRxnFluxMatrix(Rxn_Flux_Matrix)
 
-
-# In[10]:
+# In[ ]:
 
 
 # Rxn_Flux_Matrix.to_csv("/data/nandas/Coflux_matrix/FluxRed_051121/RxnFlux_063021.csv")
 
 
-# In[11]:
+# In[8]:
 
 
-modeltable=pd.read_excel("/data/nandas/Coflux_matrix/FluxRed_061722/modelTable_wbid.xlsx")
+#!cp /data/nandas/Coflux_matrix/FluxRed_061722/modelTable_wbid.xlsx .
 
 
-# In[12]:
+# ### Reading iCEL1314 model table
+
+# In[9]:
+
+
+modeltable=pd.read_excel("modelTable_wbid.xlsx")
+
+
+# In[ ]:
 
 
 # modeltable.loc['EX00081']
 
 
-# In[13]:
+# ### Processing and Intersecting DataFrames
+# 
+# This section of the code involves processing a model table for gene and reaction data and identifying the intersection between two datasets. The code and its functionality are explained below:
+# 
+# ```python
+# Rxn2Gene_df, Rxn2Gene_and, Rxn2Gene_final = Reaction2Genedf(modeltable)
+# intersect = list(set(Rxn2Gene_df.index).intersection(set(Rxn_Flux_Matrix.index)))
+# 
+# len(intersect)
+# Rxn2Gene_df = Rxn2Gene_df.loc[intersect]
+# Rxn2Gene_df.shape
+# ```
+#  The main objective of this snippet is to align and filter the reaction and gene data based on common elements in two different datasets.
+#  The final shape of Rxn2Gene_df indicates how many reactions (rows) and attributes (columns) are present in the dataset after filtering, setting the stage for further detailed analysis.
+# 
+
+# In[10]:
 
 
 Rxn2Gene_df,Rxn2Gene_and,Rxn2Gene_final=Reaction2Genedf(modeltable)
-
-
-# In[14]:
-
-
 intersect = list(set(Rxn2Gene_df.index).intersection(set(Rxn_Flux_Matrix.index)))
 
 len(intersect)
-
-
-# In[15]:
-
-
 Rxn2Gene_df = Rxn2Gene_df.loc[intersect];
 Rxn2Gene_df.shape
 
 
-# In[16]:
-
-
-Rxn2Gene_df.loc['RC02288']
-
-
-# In[17]:
+# In[ ]:
 
 
 G2RMap=GenerateG2RMap(Rxn2Gene_df)
 
 
-# In[18]:
+# In[ ]:
 
 
-# Gene_Coflux=CalculateGeneCoflux(G2RMap,Rxn_flux_matrix=Rxn_Flux_Matrix)
+Gene_Coflux=CalculateGeneCoflux(G2RMap,Rxn_flux_matrix=Rxn_Flux_Matrix)
 
 
-# In[19]:
+# In[ ]:
 
 
 # Gene_Coflux.to_csv("Gene_Coflux_062622.csv")
 
 
-# In[20]:
+# In[13]:
 
 
-# ! cp /data/nandas/Coflux_matrix/FluxRed_102220/Product_Matrix_062122/Gene_Coflux_062622.csv .
-
-
-# In[21]:
-
-
+## Read if already calculated
 Gene_Coflux=pd.read_csv("Gene_Coflux_062622.csv",index_col=0)
 
 
-# In[22]:
+# In[14]:
 
 
 Gene_Coflux=wb_to_gene(Gene_Coflux)
 
 
-# In[23]:
+# In[15]:
 
 
 Gene_Coflux=SeqToGene(Gene_Coflux)
 
 
-# In[24]:
+# In[16]:
 
 
 Gene_Coflux.loc['haly-1']['cpin-1']
 
 
-# In[25]:
+# In[17]:
 
 
 Gene_Coflux
 
 
-# In[26]:
+# ### Reading coexpression matrix
 
-
-# Gene_Coflux=pd.read_csv("/data/nandas/Coflux_matrix/FluxRed_102220/Gene_FluxReduction_withORgenes.csv",
-#                         index_col=0,header='infer')
-
-
-# In[27]:
-
-
-# ! cp /data/nandas/Combined_coexp/Sleipnir/Final_data_080620/UMN/MetabolicCorrMatrix_083120.csv .
-
-
-# In[28]:
+# In[18]:
 
 
 MetabolicCoexp=pd.read_csv("MetabolicCorrMatrix_083120.csv",
                            header='infer',index_col=0)
 
 
-# In[29]:
-
-
-# Gene_Coexp=pd.read_csv("/data/nandas/Combined_coexp/Sleipnir/Final_data_080620/UMN/MetabolicCorrMatrix_083120.csv",
-#                        index_col=0,header='infer')
-
-
-# In[30]:
-
-
-# Gene_Coexp=ConvertPairsToMatrix_SN(MetabolicCoexp)
-
-
-# In[31]:
-
-
-# Gene_Coexp.to_csv("/data/nandas/Combined_coexp/Compendium/BatchCorrectedFiles061822/MetabolicCorrMatrix_061922.csv")
-
-
-# In[32]:
-
-
-# Gene_Coexp=pd.read_csv("/data/nandas/Combined_coexp/Compendium/BatchCorrectedFiles061822/MetabolicCorrMatrix_061922.csv",
-#                       index_col=0,header='infer')
-
-
-# In[33]:
+# In[19]:
 
 
 Gene_Coexp=MetabolicCoexp
 
 
-# In[34]:
+# In[ ]:
 
 
 # Gene_Coexp=(Gene_Coexp*2)-1
 
 
-# In[35]:
+# In[20]:
 
 
 Gene_Coexp=SeqToGene(Gene_Coexp)
 Gene_Coexp=wb_to_gene(Gene_Coexp)
 
 
-# In[36]:
+# ### Gene Data Intersection
+# 
+# The following code snippet focuses on finding the common elements (genes) between two datasets and updating the matrices based on this shared subset. Here is a step-by-step explanation of each part of the code:
+# 
+# ```python
+# intersect2 = list(set(Gene_Coexp.index).intersection(set(Gene_Coflux.index)))
+# FinalFluxMatrix = Gene_Coflux.loc[intersect2][intersect2]
+# FinalCoexp = Gene_Coexp.loc[intersect2][intersect2]```
+# 
 
-
-# Gene
-
-
-# In[37]:
-
-
-# genedict=display_the_gene_in_respective_cluster_or_subtree(deepSplit=4,
-#                                                            gene_name='sams-3',
-#                                                            matrix=ProductMatrix,
-#                                                            minClusterSize=4)
-
-
-# In[38]:
-
-
-# def hist(gene1,gene2):
-#     acdh_1=Gene_Coexp.loc[gene1][gene2]
-# #     Gene_Coexp.hist()
-#     sns.clustermap(acdh_1,vmin=0,vmax=0.75,cmap='YlOrRd')
-#     plt.show()
-
-
-# In[39]:
-
-
-# Gene_Coexp.loc['ard-1']['ech-6']
-
-
-# In[40]:
-
-
-# Gene_Coexp.replace(np.nan,1,inplace=True)
-
-
-# In[41]:
-
-
-# Gene_Coexp=(Gene_Coexp+1)/2
-
-
-# In[42]:
-
-
-# Gene_Coexp.stack().plot.hist(bins=100)
-# # plt.axvline(Gene_Coexp.mean(skipna=True))
-# # plt.axvline(Gene_Coexp.median(skipna=True))
-# plt.show()
-
-
-# In[43]:
-
-
-# gene1=['acdh-1','ech-6','hphd-1','hach-1','ard-1','acdh-9','acdh-2','acdh-3','B0250.5']
-
-
-# In[44]:
-
-
-# hist(gene1=gene1,gene2=gene1)
-
-
-# In[45]:
-
-
-# geness=['pcca-1','pccb-1','mmcm-1','mce-1','mlcd-1','alh-8','gta-1']
-
-
-# In[46]:
-
-
-# hist(gene1=geness,gene2=geness)
-
-
-# In[47]:
-
-
-# Gene_Coexp.loc['dhs-28'].sort_values(ascending=False)[0:30]
-
-
-# In[48]:
-
-
-# Gene_Coflux=wb_to_gene(Gene_Coflux)
-
-
-# In[49]:
-
-
-# Gene_Coflux=SeqToGene(Gene_Coflux)
-# Gene_Coflux=gene_to_wb(Gene_Coflux)
-
-
-# In[50]:
+# In[21]:
 
 
 intersect2=list(set(Gene_Coexp.index).intersection(set(Gene_Coflux.index)))
-
-
-# In[51]:
-
-
 FinalFluxMatrix=Gene_Coflux.loc[intersect2][intersect2]
 FinalCoexp=Gene_Coexp.loc[intersect2][intersect2]
 
 
-# In[52]:
+# ### Optional Step: Transforming `FinalCoexp` Data
+# 
+# #### Functionality:
+# - This line of code transforms the data in `FinalCoexp`.
+# - It scales the original data, which should range between 0 and 1, to a new range of -1 to +1.
+# - The formula `(value * 2) - 1` is a standard method for scaling data from a [0, 1] range to a [-1, 1] range.
+# 
+# #### When to Use This Step:
+# 
+# ##### Optional Nature:
+# - It's important to note that this step should only be applied if your original data is within a 0 to 1 range.
+# - If your data already spans from -1 to +1, applying this transformation would be inappropriate as it could distort the data.
+# 
+
+# In[ ]:
 
 
 # FinalFluxMatrix=wb_to_gene(FinalFluxMatrix)
 # FinalCoexp=wb_to_gene(FinalCoexp)
 
 
-# In[53]:
+# In[22]:
 
 
 FinalCoexp=(FinalCoexp*2)-1
@@ -840,7 +736,7 @@ FinalCoexp=(FinalCoexp*2)-1
 # 
 # 
 
-# In[54]:
+# In[23]:
 
 
 count=0
@@ -854,99 +750,49 @@ for i in FinalCoexp.index:
 FinalCoexp.to_csv("ClassAExpressionForProductMatrix_062722_2_5.csv")
 
 
-# In[55]:
+# In[ ]:
 
 
-# FinalCoexp=pd.read_csv("/data/nandas/Coflux_matrix/FluxRed_102220/Product_Matrix_041122_3_2/ClassAExpressionForProductMatrix_041122_3_2.csv",
-#                        index_col=0)
+for i in FinalFluxMatrix.index:
+    for j in FinalFluxMatrix.columns:
+        print("i={},j={}".format(i,j))
+        if (FinalFluxMatrix[i][j])<0:
+            FinalFluxMatrix[i][j]=0
+FinalFluxMatrix.to_csv("ClassACofluxForProductMatrix_100921.csv")
 
 
-# In[56]:
-
-
-# FinalFluxMatrix=pd.read_csv("ClassACofluxForProductMatrix_100921.csv",index_col=0)
-
-
-# In[57]:
-
-
-FinalCoexp
-
-
-# In[58]:
-
-
-# for i in FinalFluxMatrix.index:
-#     for j in FinalFluxMatrix.columns:
-#         print("i={},j={}".format(i,j))
-#         if (FinalFluxMatrix[i][j])<0:
-#             FinalFluxMatrix[i][j]=0
-# FinalFluxMatrix.to_csv("ClassACofluxForProductMatrix_100921.csv")
-
-
-# In[59]:
+# In[ ]:
 
 
 ProductMatrix=FinalCoexp*FinalFluxMatrix
 
 
-# In[60]:
-
-
-# ProductMatrix['F54D5.12'].sort_values(ascending=False)[0:60]
-
-
-# In[61]:
-
-
-# ProductMatrix.to_csv("Product_Matrix_041122_3_2.csv")
-
-
-# In[62]:
-
-
-# ProductMatrix=pd.read_csv("Product_Matrix_041122_3_2.csv",index_col=0)
-
-
-# In[63]:
-
-
-ProductMatrix
-
-
-# In[64]:
+# In[ ]:
 
 
 ProductMatrix.to_csv("ProductMatrix_062822.csv")
 
 
-# In[65]:
+# In[ ]:
 
 
 ProductMatrix=pd.read_csv("ProductMatrix_062822.csv",index_col=0)
 
 
-# In[66]:
+# In[ ]:
 
 
-# np.fill_diagonal(FinalCoexp.values,0)
-# np.fill_diagonal(FinalFluxMatrix.values,0)
+ProductMatrix=SymmetricRxnFluxMatrix(ProductMatrix)
 
 
-# In[67]:
-
-
-# ProductMatrix=SymmetricRxnFluxMatrix(ProductMatrix)
-
-
-# In[68]:
+# In[ ]:
 
 
 ProductMatrix.replace(np.nan,0,inplace=True)
 ProductMatrix.replace(np.inf,0,inplace=True)
 
 
-# In[69]:
+# In[ ]:
 
 
 np.fill_diagonal(ProductMatrix.values,1)
@@ -964,73 +810,73 @@ np.fill_diagonal(FinalFluxMatrix.values,1)
 # clustersheatmap(genename='ard-1', deepSplit=3, minClusterSize=6, matrix=ProductMatrix)
 # 
 
-# In[70]:
+# In[ ]:
 
 
 clustersheatmap(genename='ard-1',deepSplit=3,minClusterSize=6,matrix=ProductMatrix)
 
 
-# In[71]:
+# In[ ]:
 
 
 clustersheatmap(genename='sams-3',deepSplit=3,minClusterSize=6,matrix=ProductMatrix)
 
 
-# In[72]:
+# In[ ]:
 
 
 clustersheatmap(genename='sams-3',deepSplit=2,minClusterSize=3,matrix=ProductMatrix)
 
 
-# In[73]:
+# In[ ]:
 
 
 clustersheatmap(genename='pmt-2',deepSplit=2,minClusterSize=3,matrix=ProductMatrix)
 
 
-# In[74]:
+# In[ ]:
 
 
 clustersheatmap(genename='pmt-1',deepSplit=2,minClusterSize=3,matrix=ProductMatrix)
 
 
-# In[75]:
+# In[ ]:
 
 
 clustersheatmap(genename='metr-1',deepSplit=2,minClusterSize=3,matrix=ProductMatrix)
 
 
-# In[76]:
+# In[ ]:
 
 
 clustersheatmap(genename='cbs-1',deepSplit=2,minClusterSize=3,matrix=ProductMatrix)
 
 
-# In[77]:
+# In[ ]:
 
 
 clustersheatmap(genename='cbs-2',deepSplit=2,minClusterSize=3,matrix=ProductMatrix)
 
 
-# In[78]:
+# In[ ]:
 
 
 clustersheatmap(genename='T13G4.4',deepSplit=2,minClusterSize=3,matrix=ProductMatrix)
 
 
-# In[79]:
+# In[ ]:
 
 
 clustersheatmap(genename='cbs-1',deepSplit=3,minClusterSize=6,matrix=ProductMatrix)
 
 
-# In[80]:
+# In[ ]:
 
 
 # def CombinedClusterList(dee)
 
 
-# In[81]:
+# In[ ]:
 
 
 ProductMatrix=gene_to_wb(ProductMatrix)
@@ -1038,25 +884,95 @@ FinalCoexp=gene_to_wb(FinalCoexp)
 FinalFluxMatrix=gene_to_wb(FinalFluxMatrix)
 
 
-# In[82]:
+# In[ ]:
 
 
 ProductMatrix.to_csv("ProductMatrix_WB_062722.csv")
 
 
-# In[83]:
+# In[ ]:
 
 
 ProductMatrix=pd.read_csv("ProductMatrix_WB_062722.csv",index_col=0)
 
 
-# In[84]:
+# In[ ]:
 
 
 # ProductMatrix=wb_to_gene(ProductMatrix)
 
 
-# In[85]:
+# ## Clustering of Product Matrix
+
+# ## Clustering Analysis Explanation
+# 
+# The clustering analysis in the Jupyter Notebook is carried out using a function `calculate_dist_matrix`, which is a key part of dynamic tree clustering. This function is used to generate a hierarchical clustering of data based on certain parameters. Below is an explanation of the code snippet and its significant arguments:
+# 
+# ```python
+# dist, link, clusters = calculate_dist_matrix(deepSplit=3, matrix=ProductMatrix, minClusterSize=6)
+# labels = clusters['labels']
+# ClusterList(clusters=clusters, output_df=ProductMatrix)
+# ```
+# ### Arguments Explanation
+# 
+# #### `deepSplit`
+# - **Type:** `int`
+# - **Description:** This argument controls the depth of the tree in hierarchical clustering. A higher value leads to a deeper tree, potentially resulting in more distinct clusters.
+# - **Usage in Code:** ### Understanding the `deepSplit` Parameter in Hierarchical Clustering
+# 
+# The `deepSplit` parameter is an integral part of hierarchical clustering algorithms, particularly when using dynamic tree cutting. It controls how deeply the tree is split while forming clusters. Here's an overview of the different `deepSplit` values and their implications:
+# 
+# ##### deepSplit = 0
+# - **Description:** Minimal or no additional splitting, resulting in larger clusters.
+# - **Use Case:** Best when over-segmentation is a concern and larger, more generalized clusters are preferred.
+# 
+# ##### deepSplit = 1
+# - **Description:** Slightly more aggressive splitting compared to 0, revealing more structure without much granularity.
+# - **Use Case:** Suitable for an initial understanding of the cluster groupings in the data.
+# 
+# ##### deepSplit = 2
+# - **Description:** A balanced approach that allows for moderate splitting, unveiling distinct groups within the data.
+# - **Use Case:** Optimal for datasets with some known or expected sub-groupings.
+# 
+# ##### deepSplit = 3
+# - **Description:** More aggressive splitting, leading to smaller and more specific clusters.
+# - **Use Case:** Ideal for datasets known to contain nuanced or subtle groupings.
+# 
+# ##### deepSplit = 4
+# - **Description:** The most aggressive splitting within the typical allowed range, resulting in the finest clustering.
+# - **Use Case:** Best for complex datasets with many potential subgroups, where detailed exploration is necessary.
+# 
+# ##### Key Notes:
+# - The choice of `deepSplit` value depends on the dataset's nature and the specific objectives of the clustering analysis.
+# - Higher `deepSplit` values increase granularity but may lead to over-segmentation.
+# - Always consult the documentation of the specific hierarchical clustering tool or library for precise guidelines, as implementations of `deepSplit` can vary.
+# 
+# Selecting the appropriate `deepSplit` value is crucial for achieving meaningful clustering results, with the range typically being between 0 and 4.
+# 
+# 
+# #### `ProductMatrix`
+# - **Type:** `DataFrame`
+# - **Description:** Represents the data to be clustered, containing relationships or distances between different data points.
+# - **Usage in Code:** `ProductMatrix` is used as the input matrix for the clustering function, providing the necessary data structure for cluster analysis.
+# 
+# #### `minClusterSize`
+# - **Type:** `int`
+# - **Description:** Determines the minimum number of elements required to form a valid cluster.
+# - **Usage in Code:** `minClusterSize=6` ensures that any formed cluster will contain at least six elements, avoiding overly small or insignificant clusters.
+# 
+# ### Function Output
+# 
+# - **`dist`**: A matrix representing the pairwise distances between elements in the dataset.
+# - **`link`**: The linkage matrix showing how different clusters are linked in the hierarchical tree.
+# - **`clusters`**: An object containing detailed information about the clusters formed, including their labels and sizes.
+# - **`labels`**: An array extracted from `clusters['labels']`, assigning a unique cluster label to each data point in `ProductMatrix`.
+# 
+# Following the computation of clusters, the function `ClusterList` is invoked. It processes the clustering results and lists out the elements in each cluster, utilizing both the clustering information and the original data in `ProductMatrix`.
+# 
+# This method of clustering is particularly valuable for unsupervised learning scenarios where the underlying structure of the data is unknown and needs to be discovered through analysis.
+# 
+
+# In[ ]:
 
 
 dist,link,clusters=calculate_dist_matrix(deepSplit=3,matrix=ProductMatrix,minClusterSize=6)
@@ -1066,7 +982,7 @@ ClusterList(clusters=clusters,output_df=ProductMatrix)
 
 # ## Finding list of genes in each cluster
 
-# In[86]:
+# In[ ]:
 
 
 Clusters=pd.DataFrame([])
@@ -1083,40 +999,35 @@ Cluster_list.reset_index(inplace=True)
 Cluster_list.drop(columns=['index'],inplace=True)
 
 
-# In[233]:
+# ### Clustering Analysis Steps
+# 
+# #### Initialization of Parameters:
+# - `deepSplit` and `minClusterSize` are set to 3 and 6, respectively. These values are crucial for defining the clustering behavior.
+# - `deepSplit` controls the depth of the clustering tree, impacting how granular the clusters are.
+# - `minClusterSize` specifies the minimum number of elements required for a cluster, ensuring that clusters are of a significant size.
+# 
+# #### Iterating Over Clusters:
+# - The loop iterates over each index in `Cluster_list`, which contains information about clustered genes.
+# - For each cluster, a new DataFrame, `FinalCluster`, is initialized to store combined data relevant to that cluster.
+# 
+# #### Processing Cluster Genes:
+# - Genes within the current cluster are extracted and stored in the `genes` list.
+# - Three sub-matrices – `ProductCluster`, `CoexpCluster`, and `CofluxCluster` – are created for each gene cluster. These matrices contain data from `ProductMatrix`, `FinalCoexp`, and `FinalFluxMatrix`, respectively.
+# 
+# #### Combining Data:
+# - For each pair of genes in the cluster, the corresponding values from `CofluxCluster`, `CoexpCluster`, and `ProductCluster` are concatenated into a single string. This composite string is then stored in the `FinalCluster` DataFrame.
+# - This process effectively merges information from different matrices, providing a consolidated view of data for each cluster.
+# 
+# #### Saving the Final Cluster Data:
+# - Each `FinalCluster` DataFrame is saved as a CSV file. The naming convention for these files incorporates the cluster index, `minClusterSize`, and `deepSplit` values.
+# - The files are saved in the specified directory, in this case, `/data/nandas/WormClust/product/`, facilitating easy access and organization of the cluster-specific data.
+# 
+# ### Objective of This Code Segment:
+# - The primary aim is to synthesize and organize data from multiple sources into distinct cluster-focused datasets.
+# - This approach allows for in-depth analysis of each gene cluster, utilizing a comprehensive dataset that encapsulates various aspects of gene behavior and interactions.
+# 
 
-
-# ProductMatrix=wb_to_gene(ProductMatrix)
-# FinalCoexp=wb_to_gene(FinalCoexp)
-# FinalFluxMatrix=wb_to_gene(FinalFluxMatrix)
-
-
-# In[234]:
-
-
-# ProductMatrix=gene_to_wb(ProductMatrix)
-
-
-# In[235]:
-
-
-# ProductMatrix=wb_to_gene(ProductMatrix)
-
-
-# In[236]:
-
-
-# ProductMatrix.loc['R05D11.9'].sort_values()
-
-
-# In[237]:
-
-
-# ProductMatrix=wb_to_gene(ProductMatrix)
-# clustersheatmap(genename='acdh-1',deepSplit=1,minClusterSize=3,matrix=ProductMatrix)
-
-
-# In[87]:
+# In[ ]:
 
 
 deepSplit=3
@@ -1145,247 +1056,182 @@ for index in Cluster_list.index:
 # In[ ]:
 
 
-
-
-
-# In[239]:
-
-
-# ProductMatrix.drop(columns=['Silhoutte_Score','Cluster'],inplace=True)
-
-
-# In[240]:
-
-
-# !mkdir /data/nandas/WormClust/Product
-
-
-# In[241]:
-
-
-# !ls -lhrt /data/nandas/WormClust/Product/
-
-
-# In[242]:
-
-
-# GeneList_5_3=[]
-# for genename in ProductMatrix.index:
-#     try:
-#         clustersheatmap(genename=genename,deepSplit=3,minClusterSize=5,matrix=ProductMatrix)
-#     except:
-#         GeneList_5_3.append(genename)
-#         print(GeneList_5_3)
-#         pass
-  
-
-
-# In[243]:
-
-
-# GeneList_5_3=pd.DataFrame(GeneList_5_3)
-# GeneList_5_3.to_csv("GenesInvalidFor5_3.csv")
-
-
-# In[88]:
-
-
-FinalCoexp.replace(np.nan,0,inplace=True)
-FinalCoexp.replace(np.inf,0,inplace=True)
-
-
-# In[89]:
-
-
 ProductMatrix.replace(np.nan,0,inplace=True)
 ProductMatrix.replace(np.inf,0,inplace=True)
 
 
-# In[246]:
-
-
-# ProductMatrix.drop(columns=['Silhoutte_Score', 'Cluster'],inplace=True)
-
-
-# In[247]:
-
-
-# ProductMatrix=pd.read_csv("ProductMatrix_062722.csv",index_col=0)
-
-
-# In[90]:
+# In[ ]:
 
 
 np.fill_diagonal(ProductMatrix.values,1)
 
 
-# In[91]:
+# In[ ]:
 
 
 ProductMatrix=wb_to_gene(ProductMatrix)
 
 
-# In[92]:
+# ### Clustering of product matrix
+
+# In[ ]:
 
 
 dist,link,clusters=calculate_dist_matrix(deepSplit=3,matrix=ProductMatrix,minClusterSize=6)
 
 
-# In[93]:
+# In[ ]:
 
 
 FinalCoexp.index=FinalCoexp.index.str.strip()
 
 
-# In[94]:
+# In[ ]:
 
 
 FinalCoexp=FinalCoexp.transpose()
 
 
-# In[95]:
+# In[ ]:
 
 
 FinalCoexp
 
 
-# In[96]:
+# In[ ]:
 
 
 labels=clusters['labels']
 
 
-# In[97]:
+# In[ ]:
 
 
 len(labels)
 
 
-# In[98]:
+# In[ ]:
 
 
 Number_of_clusters=np.unique(clusters['labels'])
 
 
-# In[99]:
+# In[ ]:
 
 
 ClusterList(clusters=clusters,output_df=ProductMatrix)
 
 
-# In[100]:
+# In[ ]:
 
 
 Number_of_clusters
 
 
-# In[101]:
+# In[ ]:
 
 
 clusters
 
 
-# In[102]:
+# In[ ]:
 
 
 (clusters['labels']==0)
 
 
-# In[103]:
+# ### Cluster Analysis and Visualization
+# 
+# #### Creating Clusters DataFrame:
+# - A new DataFrame `Clusters` is created to store cluster-related information.
+# - The 'Genes' column in `Clusters` is populated with the gene names extracted from `ProductMatrix`'s index.
+# - The 'Cluster' column in `Clusters` is assigned values from the 'labels' obtained from the clustering analysis.
+# 
+# #### Cluster List Initialization:
+# - `Cluster_list` is initialized as an empty dictionary to store cluster information.
+# - Unique cluster labels are extracted from the 'labels' array obtained from the clustering result.
+# - For each unique label:
+#   - A new entry in `Cluster_list` is created with the label as the key.
+#   - The corresponding genes that belong to that cluster are extracted and stored as a list.
+# 
+# #### Converting Cluster List to DataFrame:
+# - `Cluster_list` is converted to a DataFrame using `pd.DataFrame.from_dict()`, where each row represents a cluster.
+# - The index is reset to create a more structured DataFrame.
+# - A new 'labels' column is created to store cluster labels for reference.
+# 
+# #### Cluster Size Calculation:
+# - For each cluster in `Cluster_list`, the size of the cluster (number of genes) is calculated.
+# - The cluster sizes are stored in a new DataFrame `ClusterSize` with a column named 'Cluster_size'.
+# - `ClusterSize` is sorted in ascending order based on cluster size.
+# 
+# #### Cluster Size Visualization:
+# - A bar plot is created to visualize the distribution of cluster sizes.
+# - The x-axis represents the cluster size, and the y-axis represents the count of clusters with that size.
+# - The resulting plot provides insights into the distribution of genes across clusters.
+# 
+# #### Saving Cluster Size Data:
+# - The cluster size information is saved as a CSV file named "ClusterSize_6_3.csv" for further analysis and reference.
+# 
+# ### Objective of This Code Segment:
+# - This code segment performs cluster analysis on gene data and provides insights into the distribution and sizes of gene clusters.
+# - The resulting cluster size visualization helps in understanding the composition of gene clusters in the dataset.
+# 
+
+# In[ ]:
 
 
 Clusters=pd.DataFrame([])
 Clusters['Genes']=ProductMatrix.index
 Clusters['Cluster']=clusters['labels']
-
-
-# In[104]:
-
-
 Cluster_list={}
 labels=np.unique(clusters['labels'])
-
-
-# In[105]:
-
-
 for label in labels:
     print(label)
     Cluster_list[label]=list(Clusters[Clusters.Cluster==label]['Genes']);
-    
-
-
-# In[106]:
-
-
 Cluster_list=pd.DataFrame.from_dict(Cluster_list,orient='index')
-
-
-# In[107]:
-
-
 Cluster_list.reset_index(inplace=True)
-
-
-# In[108]:
-
-
-Cluster_list
-
-
-# In[109]:
-
-
 for i in Cluster_list.index:
     print(i)
     Cluster_list.at[i,'labels']="{}".format(i)
-
-
-# In[110]:
-
-
-Cluster_list
-
-
-# In[121]:
-
-
-# Cluster_list.set_index(['ClusterName'],inplace=True)
-
-
-# In[111]:
-
-
 Cluster_list.drop(columns=['index'],inplace=True)
-
-
-# In[112]:
-
-
 ClusterSize=pd.DataFrame(Cluster_list.notna().sum(axis=1))
-
-
-# In[113]:
-
-
 ClusterSize.set_axis(['Cluster_size'],inplace=True,axis=1)
-
-
-# In[114]:
-
-
 ClusterSize.sort_values(by=['Cluster_size'],inplace=True)
-
-
-# In[115]:
-
-
 ClusterSize['Cluster_size'].value_counts().plot(kind='bar')
 # plt.xticks(np.arange(0,65,5))
-ClusterSize.to_csv("ClusterSize__3.csv")
+ClusterSize.to_csv("ClusterSize_6_3.csv")
 
 
-# In[116]:
+# ### Visualization of Cluster Sizes
+# 
+# #### Cluster Size Histogram:
+# - A histogram of cluster sizes is created using `ClusterSize.hist()`.
+# - The `grid` parameter is set to `False` to remove gridlines.
+# - The `bins` parameter is set to `60` to control the number of bins in the histogram.
+# 
+# #### Customizing Plot Limits and Labels:
+# - `plt.ylim(0, 28)` sets the y-axis limits to focus on the relevant frequency range.
+# - `plt.xlim(0, 65)` sets the x-axis limits to show cluster sizes up to 65.
+# - `plt.xlabel("Size of cluster")` sets the x-axis label to describe the data being plotted.
+# - `plt.ylabel("Frequency")` sets the y-axis label to represent the count of clusters.
+# - `plt.xticks(np.arange(0, 65, 5))` customizes the x-axis tick marks at intervals of 5.
+# 
+# #### Saving the Plot:
+# - The histogram plot is saved in two formats:
+#   - "ClusterSizePlot.svg" as an SVG file with a DPI of 300.
+#   - "ClusterSizePlot.png" as a PNG file with a DPI of 300.
+# 
+# #### Saving Cluster List Data:
+# - `Cluster_list` is saved as a GMT (Gene Matrix Transposed) file named "ProductMatrixClusterListFluxRed_6_3_062722.gmt".
+# - `Cluster_list` is also saved as a CSV file named "ProductMatrixClusterListFluxRed_6_3_062722.csv" using a tab separator.
+# 
+# ### Objective of This Code Segment:
+# - This code segment visualizes the distribution of cluster sizes using a histogram.
+# - Customizations are applied to the plot, and the resulting histogram is saved in both SVG and PNG formats.
+# - Additionally, the gene cluster list is saved in GMT and CSV formats for reference and further analysis.
+# 
+
+# In[ ]:
 
 
 ClusterSize.hist(grid=False,bins=60)
@@ -1396,53 +1242,20 @@ plt.ylabel("Frequency")
 plt.xticks(np.arange(0,65,5))
 plt.savefig("ClusterSizePlot.svg",dpi=300)
 plt.savefig("ClusterSizePlot.png",dpi=300)
-
-
-# In[117]:
-
-
 Cluster_list.to_csv("ProductMatrixClusterListFluxRed_6_3_062722.gmt",sep='\t')
 Cluster_list.to_csv("ProductMatrixClusterListFluxRed_6_3_062722.csv",sep='\t')
 
 
-# In[118]:
-
-
-Cluster_list
-
-
-# In[130]:
+# In[ ]:
 
 
 # ProductMatrix.drop(columns=['Silhoutte_Score', 'Cluster'],inplace=True)
 
 
-# In[131]:
+# In[ ]:
 
 
 # ProductMatrix.drop(columns=['Silhoutte_Score','Cluster'],inplace=True)
-
-
-# In[132]:
-
-
-# genedict=display_the_gene_in_respective_cluster_or_subtree(deepSplit=2,
-#                                                            gene_name='acdh-1',
-#                                                            matrix=ProductMatrix,
-#                                                            minClusterSize=3)
-
-
-# In[133]:
-
-
-# genelist=list()
-# for key in genedict.keys():
-#     print("key is {}".format(key))
-#     gene=genedict[key]
-#     print("gene is {}".format(gene))
-#     genelist.append(gene)
-#     print("gene list is {}".format(genelist))
-    
 
 
 # ### Function: `clustersheatmap`
@@ -1470,7 +1283,7 @@ Cluster_list
 # clustersheatmap(genename='example_gene', deepSplit=3, minClusterSize=6, matrix=your_matrix)
 # 
 
-# In[119]:
+# In[ ]:
 
 
 
@@ -1507,7 +1320,7 @@ def clustersheatmap(genename,deepSplit,minClusterSize,matrix):
 # 
 # 
 
-# In[120]:
+# In[ ]:
 
 
 silhoutte_score_values=SilhoutteSample(dist=dist,labels=clusters['labels'],metric='precomputed')
@@ -1515,7 +1328,7 @@ Silhoutte_Val=Silhoutte_Values(output_df=ProductMatrix,labels=clusters['labels']
                                silhouette_score_values=silhoutte_score_values)
 
 
-# In[137]:
+# In[ ]:
 
 
 # Silhoutte_Val=wb_to_gene(Silhoutte_Val)
@@ -1523,7 +1336,7 @@ Silhoutte_Val=Silhoutte_Values(output_df=ProductMatrix,labels=clusters['labels']
 
 # ### Find which cluster does propionate shunt fall in to test for positive control
 
-# In[121]:
+# In[ ]:
 
 
 Silhoutte_Val.loc['acdh-1']['Cluster']
@@ -1539,7 +1352,7 @@ Silhoutte_Val.loc['acdh-1']['Cluster']
 # 2. Computes the average silhouette score across all clusters.
 # 
 
-# In[122]:
+# In[ ]:
 
 
 n_clusters=len(np.unique(clusters['labels']))
@@ -1552,42 +1365,23 @@ silhouette_avg = silhouette_score(dist, labels=clusters['labels'],metric='precom
 # 
 # 
 
-# In[123]:
+# In[ ]:
 
 
 y=Silhoutte_Val[Silhoutte_Val.Cluster==(Silhoutte_Val.loc['acdh-1']['Cluster'])]
 
 
-# In[124]:
+# In[ ]:
 
 
 y.index
 
 
-# In[35]:
-
-
-#z=Silhoutte_Val[Silhoutte_Val.Cluster==37]
-
-
-# In[36]:
-
-
-
-#z
-
-
-# In[125]:
+# In[ ]:
 
 
 y=y.loc[['acdh-1','ech-6','hach-1', 'hphd-1','bckd-1A','acdh-2' , 'ard-1', 'B0250.5', 'acdh-9', 
         'bckd-1B', 'dbt-1', 'Y43F4A.4' , 'acdh-3']]
-
-
-# In[126]:
-
-
-Silhoutte_Val[Silhoutte_Val.Cluster==37].sort_values(by=['Silhoutte_Score'])
 
 
 # 
@@ -1596,13 +1390,13 @@ Silhoutte_Val[Silhoutte_Val.Cluster==37].sort_values(by=['Silhoutte_Score'])
 # 
 # 
 
-# In[127]:
+# In[ ]:
 
 
 Mean_threshold=Silhoutte_Val.loc[y.index].Silhoutte_Score.mean()
 
 
-# In[128]:
+# In[ ]:
 
 
 Mean_threshold
@@ -1621,7 +1415,7 @@ Mean_threshold
 # 
 # 
 
-# In[129]:
+# In[ ]:
 
 
 Clusters=pd.DataFrame([]);
@@ -1633,26 +1427,48 @@ for i in np.unique(clusters['labels']):
 median=Clusters['Mean Silhoutte Values'].median()   
 
 
-# In[130]:
+# In[ ]:
 
 
 median
 
 
 # 
-# **Purpose:** 
-# This snippet generates a scatter plot visualizing the silhouette scores of genes in a specific cluster (referred to as 'shunt cluster'). It also marks the mean silhouette score of this cluster and the median silhouette score of selected clusters for comparison.
+# ### Silhouette Score Visualization
 # 
-# **Process:**
-# 1. Creates a figure with specified dimensions.
-# 2. Plots a scatter graph of silhouette scores (`Silhoutte_Score`) for each gene in the 'shunt cluster'.
-# 3. Draws horizontal lines to represent the mean silhouette score of the 'shunt cluster' and the median silhouette score of selected clusters.
-# 4. Adds legends, labels, and other formatting details.
-# 5. Saves the plot as an SVG file with transparent background.
+# #### Scatter Plot of Silhouette Scores:
+# - A scatter plot is generated using `plt.scatter()` to visualize silhouette scores (`y.Silhouette_Score`) for genes in the shunt cluster.
+# - The `vmin` and `vmax` parameters are used to set the color scale for the scatter plot.
+# - `vmin` is set to `0`, and `vmax` is set to `0.8`.
+# - Silhouette scores are plotted on the y-axis, and gene indices (e.g., `y.index`) are plotted on the x-axis.
 # 
+# #### Horizontal Threshold Lines:
+# - Two horizontal threshold lines are added using `plt.hlines()`:
+#   - A green line represents the mean silhouette score of the shunt cluster (`Mean_threshold`) with a label.
+#   - A red line represents the threshold of the mean silhouette score of selected clusters (`median`) with a label.
+# 
+# #### Legend and Labels:
+# - A legend is displayed in the upper-left corner (`plt.legend(loc='upper left')`) to explain the threshold lines.
+# - The x-axis is labeled as "Genes in shunt cluster" with a font size of 15.
+# - The y-axis is labeled as "Silhouette Score" with a font size of 15.
+# - The y-axis limits are set to range from 0 to 0.6 using `plt.ylim(0, 0.6)`.
+# 
+# #### Font Customization:
+# - The font family is set to Arial (`plt.rcParams["font.family"] = "Arial"`).
+# 
+# #### Saving the Plot:
+# - The scatter plot is saved as an SVG file named "Shunt_Genes_SS_{minClusterSize}_{deepSplit}.svg".
+# - The DPI (dots per inch) is set to 600 for high resolution.
+# - The plot is saved with a transparent background.
+# 
+# ### Objective of This Code Segment:
+# - This code segment creates a scatter plot to visualize silhouette scores for genes in the shunt cluster.
+# - Threshold lines are added to highlight specific silhouette score values.
+# - The resulting plot is customized with labels, legends, and font settings.
+# - It is saved as an SVG file for further analysis and documentation.
 # 
 
-# In[131]:
+# In[ ]:
 
 
 plt.figure(figsize=(12,4))
@@ -1668,19 +1484,35 @@ plt.rcParams["font.family"] = "Arial"
 plt.savefig("Shunt_Genes_SS_{}_{}.svg".format(minClusterSize,deepSplit),dpi=600,transparent=True)
 
 
-# This snippet generates a histogram to visualize the distribution of silhouette scores for genes based on their placement in clusters. It also marks a threshold line representing the median silhouette score of the clusters.
+# ### Distribution of Mean Silhouette Scores
 # 
-# **Process:**
-# 1. Sets up a figure with specified dimensions.
-# 2. Creates a histogram of the silhouette scores from `Silhoutte_Val` dataframe.
-# 3. Configures the histogram settings, such as the number of bins and grid visibility.
-# 4. Adds labels to the x-axis and y-axis, and a title to the plot.
-# 5. Draws a vertical line representing the median silhouette score of clusters and adds a legend.
-# 6. Sets the font style for the plot.
+# #### Histogram Plot:
+# - A histogram plot is generated using `Silhoutte_Val.Silhoutte_Score.hist()` to visualize the distribution of mean silhouette scores.
+# - The `bins` parameter is set to `100` for better granularity.
+# - Grid lines are turned off using `grid=False`.
 # 
+# #### Labels and Vertical Threshold Line:
+# - The x-axis is labeled as "Mean Silhouette Scores".
+# - The y-axis is labeled as "No. of genes".
+# - A vertical threshold line is added using `plt.axvline()` with `x=median` to represent the threshold of mean silhouette scores of clusters.
+# - The line is colored red and labeled as 'Threshold of MSS of clusters=0.069'.
+# 
+# #### Font Customization:
+# - The font family is set to Arial (`plt.rcParams["font.family"] = "Arial"`).
+# 
+# #### Title:
+# - The plot is given a title: "Distribution of Silhouette scores of genes as per their placement in clusters".
+# 
+# #### Saving the Plot (Optional):
+# - You can choose to save the plot using `plt.savefig()` if desired.
+# 
+# ### Objective of This Code Segment:
+# - This code segment creates a histogram plot to visualize the distribution of mean silhouette scores for genes based on their placement in clusters.
+# - It helps in understanding the spread of silhouette scores and identifies the threshold value for cluster quality.
+# - The resulting plot is customized with labels, legends, and font settings.
 # 
 
-# In[132]:
+# In[ ]:
 
 
 plt.figure(figsize=(5,4))
@@ -1692,21 +1524,32 @@ plt.rcParams["font.family"] = "Arial"
 plt.title("Distribution of Silhoutte scores of genes \nas per their placement in clusters")
 
 
-# ### Code Snippet Description
+# ### Distribution of Mean Silhouette Scores for Clusters
 # 
-# **Purpose:** 
-# This snippet creates a histogram to visualize the distribution of mean silhouette scores across different clusters. It also marks a threshold line representing the median of these mean silhouette scores.
+# #### Histogram Plot:
+# - A histogram plot is generated using `plt.hist()` to visualize the distribution of mean silhouette scores for clusters.
+# - The `density=True` parameter is used to normalize the histogram.
+# - `bins=40` is set to define the number of bins for the histogram.
 # 
-# **Process:**
-# 1. Sets up a figure with specified dimensions.
-# 2. Draws a vertical line to represent the median mean silhouette score of the selected clusters.
-# 3. Creates a histogram for the mean silhouette values of the clusters from the `Clusters` dataframe.
-# 4. Configures the histogram settings, such as density, number of bins, and grid visibility.
-# 5. Adds labels to the x-axis and y-axis.
-# 6. Sets the font style for the plot.
-# 7. Saves the plot as an SVG file with a transparent background.
+# #### Vertical Threshold Line:
+# - A vertical threshold line is added using `plt.axvline()` with `x=median` to represent the threshold of mean silhouette scores of selected clusters.
+# - The line is colored red and labeled as 'Selected Clusters threshold (Median)=0.069'.
+# 
+# #### Labels and Font Customization:
+# - The x-axis is labeled as "Mean Silhouette Score".
+# - The y-axis is labeled as "Number of clusters".
+# - The font family is set to Arial (`plt.rcParams["font.family"] = "Arial"`).
+# 
+# #### Saving the Plot (Optional):
+# - You can choose to save the plot using `plt.savefig()` if desired.
+# 
+# ### Objective of This Code Segment:
+# - This code segment creates a histogram plot to visualize the distribution of mean silhouette scores for clusters.
+# - It helps in understanding the distribution of cluster quality based on their mean silhouette scores.
+# - The resulting plot is customized with labels, legends, and font settings.
+# 
 
-# In[133]:
+# In[ ]:
 
 
 fig=plt.figure(figsize=(5,4))
@@ -1724,26 +1567,33 @@ plt.rcParams["font.family"] = "Arial"
 plt.savefig("MeanthresholdSS_{}_{}.svg".format(minClusterSize,deepSplit),dpi=300,transparent=True)
 
 
-# ### Function: `PlotSilhouttePlot`
+# ### Silhouette Plot for Cluster Evaluation
 # 
-# **Description:** 
-# This function creates a silhouette plot for visualizing the distribution of silhouette scores across different clusters. The silhouette plot provides an intuitive representation of the density and separation of the formed clusters.
+# #### Description:
+# - The code segment defines a function `PlotSilhouttePlot` to create a silhouette plot for evaluating clustering results.
 # 
-# **Parameters:**
-# - `output_df`: The dataframe used for plotting.
-# - `labels`: Cluster labels corresponding to each point in the dataframe.
+# #### Function Parameters:
+# - `output_df`: A DataFrame containing the data to be clustered.
+# - `labels`: Cluster labels assigned to data points.
 # 
-# **Functionality:**
-# 1. Sets up a figure and axes with specified dimensions.
-# 2. Defines the x-axis limits for silhouette coefficient values and y-axis limits based on the number of samples and clusters.
-# 3. Calculates the silhouette scores for each sample.
-# 4. Iterates over each cluster to plot the silhouette scores of its samples.
-# 5. Colors each cluster's silhouette plot and labels them.
-# 6. Adds a vertical line indicating the median silhouette score across all clusters.
-# 7. Removes y-axis labels and sets specific x-axis ticks.
-# 8. Saves the plot as a SVG file and displays it.
+# #### Silhouette Plot Details:
+# - The function creates a vertical figure with a specified size (`figsize=[10, 100]`).
+# - It sets the x-axis limits to [-0.2, 0.4] and y-axis limits to [0, number of data points + (number of clusters + 1) * 10].
+# - Silhouette scores for each sample are computed using `silhouette_samples()` and stored in `sample_silhouette_values`.
+# - The silhouette plot is generated for each cluster, with clusters represented by filled areas in different colors.
+# - Cluster numbers are labeled in the middle of the silhouette plots.
+# - The vertical dashed line represents the average silhouette score (`ax.axvline(x=median, color="red", linestyle="--")`).
+# - Y-axis labels and ticks are removed, and specific x-axis ticks are set.
+# - The resulting silhouette plot is saved as "Silhoutte_plot.svg" and displayed.
+# 
+# #### Objective of This Code Segment:
+# - This code segment creates a silhouette plot to visually assess the quality of clusters.
+# - Silhouette plots help determine how well-separated clusters are and identify poorly clustered data points.
+# - The average silhouette score threshold is indicated by the red dashed line.
+# - It provides insights into the clustering effectiveness.
+# 
 
-# In[134]:
+# In[ ]:
 
 
 def PlotSilhouttePlot(output_df,labels):    
@@ -1812,132 +1662,46 @@ def PlotSilhouttePlot(output_df,labels):
     #              fontsize=14, fontweight='bold')
     plt.savefig("Silhoutte_plot.svg")
     plt.show()
-
-
-# In[135]:
-
-
+    
 PlotSilhouttePlot(output_df=ProductMatrix,labels=clusters['labels'])
 
 
-# In[179]:
-
-
-# import re
-
-# from pylab import *
-# from scipy.optimize import curve_fit
-# import matplotlib.pyplot as plt
-# def normal(x,mu,sigma,N):
-#     '''Returns a normal distribution scaled with <N> as the population size.'''
-#     deltax=x[2]-x[1];
-#     coef=deltax*N*(1./(sqrt(2.*pi*sigma**2)));
-#     return coef*exp(-(x-mu)**2/2/sigma**2)
-
-
-# In[180]:
-
-
-# x=normal(x=Clusters['Mean Silhoutte Values'],mu=Clusters['Mean Silhoutte Values'].mean(),
-#          sigma=Clusters['Mean Silhoutte Values'].std(),N=Clusters.shape[0])
-
-
-# In[181]:
-
-
-# mean, var =norm.fit(Clusters['Mean Silhoutte Values'])
-
-
-# In[182]:
-
-
-# fig=plt.figure(figsize=(7,5))
-# x = np.linspace(-0.4,0.4,50)
-
-# fitted_data = norm.pdf(x, mean, var)
-# # plt.axvline(mean,label='Mean =0.09986',color='darkgreen')
-# plt.axvline(median,label='Selected Clusters \nthreshold (Median)=0.094',color='purple')
-# plt.hist(Clusters['Mean Silhoutte Values'], density=True)
-# plt.legend(loc='upper left')
-# plt.xlabel("Mean Silhoutte Score")
-# plt.ylabel("Number of clusters")
-# plt.plot(x,fitted_data,'r-')
-# plt.savefig("MeanthresholdSS.svg",dpi=600)
-
-
-# In[183]:
-
-
-# Clusters['Mean Silhoutte Values'].hist(bins=50,grid=False)
-# median=Clusters['']
-# plt.axvline(0.08,label='Selected Clusters \nthreshold =0.08',color='red')
-# plt.title("Frequency of mean Silhoutte Scores(SS) of each cluster")
-# plt.xlabel("Mean Silhoutte Score")
-# plt.ylabel("No. of clusters")
-# plt.legend(loc='best')
-# plt.savefig("SelectedCluster.svg")
-
-
-# In[136]:
-
-
-median
-
-
-# In[185]:
-
-
-# (Clusters['Mean Silhoutte Values'].mean())-(Clusters['Mean Silhoutte Values'].std())
-
-
-# In[186]:
-
-
-# (Clusters['Mean Silhoutte Values'].mean())
-
-
-# In[137]:
-
-
-Clusters['Mean Silhoutte Values'].std()
-
-
-# In[138]:
-
-
-Clusters[Clusters['Mean Silhoutte Values']>median].shape
-
-
-# In[189]:
-
-
-# Clusters.sort_values(by=['Mean Silhoutte Values'],ascending=False,inplace=True)
-
-
-# In[190]:
-
-
-# Clusters.reset_index(inplace=True)
-
-
-# In[191]:
-
-
-# Clusters.drop(columns=['index'],inplace=True)
-
-
-# ### Code Snippet Description
+# ### Cluster Labeling and Selection
 # 
-# **Purpose:** 
-# This snippet adds a new column, 'LabelName', to the dataframe `Clusters`, assigning a unique label name to each cluster index.
+# #### Description:
+# - The code segment assigns formatted label names to clusters and selects clusters based on specific criteria.
 # 
-# **Process:**
-# 1. Iterates through each index in the `Clusters` dataframe.
-# 2. For each index, creates a label name in the format 'Label_{index}'.
-# 3. Assigns this label name to the corresponding row in the 'LabelName' column of the `Clusters` dataframe.
+# #### Steps in the Code:
+# 
+# 1. **Assign Label Names to Clusters:**
+#    - Each cluster index in the `Clusters` DataFrame is assigned a formatted label name of the form "Label_{}". The labels are stored in a new column called 'LabelName'.
+#    - The first cluster (index 0) is labeled as "Unclustered_Cluster" for clarity.
+# 
+# 2. **Assign Label Names to Cluster List:**
+#    - Similarly, each cluster index in the `Cluster_list` DataFrame is assigned a formatted label name.
+#    - The first cluster (index 0) is labeled as "Unclustered_Cluster" for consistency.
+# 
+# 3. **Set Indexes:**
+#    - The 'LabelName' column is set as the index for both the `Cluster_list` and `Clusters` DataFrames.
+# 
+# 4. **Select Clusters:**
+#    - The code identifies the intersection of indexes between `Clusters` and `Cluster_list` and stores them as `selected_indices`.
+# 
+# 5. **Create Selected Clusters DataFrame:**
+#    - A new DataFrame called `Selected_Clusters` is created by combining relevant columns from both `Cluster_list` and `Clusters`. This includes the 'Mean Silhoutte Values' and up to 38 genes associated with each cluster.
+#    - Columns with integer names are renamed to 'Gene_X', where X represents the gene number.
+#    - The index of `Selected_Clusters` is set to 'ClusterName', with labels of the form "Cluster_{}". The original 'LabelName' column is dropped.
+# 
+# 6. **Save Selected Clusters:**
+#    - The `Selected_Clusters` DataFrame is saved as "ClusterList_6_3_021523.csv".
+# 
+# #### Objective of This Code Segment:
+# - This code segment prepares and selects clusters for further analysis based on their silhouette scores and associated genes.
+# - It assigns meaningful label names to clusters for easier reference.
+# - The selected clusters are saved as a CSV file for future reference and analysis.
 # 
 
-# In[142]:
+# In[ ]:
 
 
 for index in Clusters.index:
@@ -1946,164 +1710,63 @@ for index in Clusters.index:
 for index in Clusters.index:
     if index==0:
         Clusters.at[index,'LabelName']="Unclustered_Cluster"
-
-
-# In[143]:
-
-
 for index in Cluster_list.index:
 #     print(index)
     Cluster_list.at[index,'LabelName']="Label_{}".format((index))
 for index in Cluster_list.index:
     if index==0:
         Cluster_list.at[index,'LabelName']="Unclustered_Cluster"
-
-
-# In[144]:
-
-
 Cluster_list.set_index(['LabelName'],inplace=True)
 Clusters.set_index(['LabelName'],inplace=True)
-
-
-# In[145]:
-
-
 selected_indices=list(set(Clusters.index).intersection(set(Cluster_list.index)))
-
-
-# In[54]:
-
-
-# Selected_Clusters=Cluster_list.loc[selected_indices]
-
-
-# In[146]:
-
-
-Clusters.columns
-
-
-# In[147]:
-
-
 Selected_Clusters=Cluster_list
-
-
-# In[148]:
-
-
 Selected_Clusters['Mean Silhoutte Values']=Clusters['Mean Silhoutte Values']
-
-
-# In[202]:
-
-
-# Selected_Clusters=Selected_Clusters[Selected_Clusters['Mean Silhoutte Values']>=median]
-
-
-# In[149]:
-
-
 Selected_Clusters.sort_values(by=['Mean Silhoutte Values'],inplace=True,ascending=False)
-
-
-# In[204]:
-
-
-# Selected_Clusters=Selected_Clusters['Mean Silhoutte Values']
-
-
-# In[150]:
-
-
-Selected_Clusters.columns
-
-
-# In[151]:
-
-
 for column in Selected_Clusters.columns:
     print(column)
     if type(column)==int:
         print("int")
         Selected_Clusters.rename(columns={column:'Gene_{}'.format(column+1)},inplace=True)
-    
-
-
-# In[152]:
-
-
-Selected_Clusters
-
-
-# In[153]:
-
-
 Selected_Clusters=Selected_Clusters[['Mean Silhoutte Values','Gene_1', 'Gene_2', 'Gene_3', 'Gene_4', 'Gene_5', 'Gene_6', 'Gene_7',
        'Gene_8', 'Gene_9', 'Gene_10', 'Gene_11', 'Gene_12', 'Gene_13',
        'Gene_14', 'Gene_15', 'Gene_16', 'Gene_17', 'Gene_18', 'Gene_19', 'Gene_20', 'Gene_21', 'Gene_22', 'Gene_23',
        'Gene_24', 'Gene_25', 'Gene_26', 'Gene_27', 'Gene_28','Gene_29', 'Gene_30', 'Gene_31', 'Gene_32', 'Gene_33',
-       'Gene_34', 'Gene_35', 'Gene_36', 'Gene_37', 'Gene_38']]
-
-
-# In[154]:
-
-
+       'Gene_34', 'Gene_35', 'Gene_36', 'Gene_37', 'Gene_38']]   
 Selected_Clusters.reset_index(inplace=True)
-
-
-# In[155]:
-
-
 for index in Selected_Clusters.index:
 #     print(index)
     Selected_Clusters.at[index,'ClusterName']="Cluster_{}".format((index+1))
-
-
-# In[156]:
-
-
 Selected_Clusters.set_index(['ClusterName'],inplace=True)
-
-
-# In[212]:
-
-
-# Clusters.drop(columns=['ClusterName'],inplace=True)
-
-
-# In[213]:
-
-
-# Selected_Clusters_sets=Clusters.sort_values(ascending=False,by=['Mean Silhoutte Values'])
-
-
-# In[157]:
-
-
 Selected_Clusters.drop(columns=['LabelName'],inplace=True)
-
-
-# In[215]:
-
-
-# Selected_Clusters=Clusters[Clusters['Mean Silhoutte Values']>=median]
-
-
-# In[216]:
-
-
-# Selected_Clusters
-
-
-# In[158]:
-
-
 Selected_Clusters.to_csv("ClusterList_6_3_021523.csv")
 
 
-# In[159]:
+# ### Histogram of Mean Silhouette Scores
+# 
+# #### Description:
+# - This code segment generates a histogram to visualize the distribution of mean silhouette scores for clusters that are above a specified threshold.
+# 
+# #### Steps in the Code:
+# 
+# 1. **Create Histogram:**
+#    - The code segment generates a histogram of the 'Mean Silhoutte Values' from the `Selected_Clusters` DataFrame.
+#    - The `grid` parameter is set to `False` to remove grid lines from the plot.
+# 
+# 2. **Add Title and Labels:**
+#    - The title of the histogram is set to 'Mean Silhoutte Scores of clusters that are above threshold'.
+#    - A vertical line is added to indicate the threshold value, labeled as 'Threshold', and colored green.
+#    - The x-axis label is set as "Mean Silhoutte Score", and the y-axis label as "No. of clusters".
+# 
+# 3. **Add Legend:**
+#    - A legend is added to the plot, positioned at the best location, to label the threshold line.
+# 
+# #### Objective of This Code Segment:
+# - This code segment provides a visualization of the distribution of mean silhouette scores for clusters that meet a specified threshold.
+# - It helps users understand the distribution of cluster quality based on silhouette scores.
+# 
+# 
+
+# In[ ]:
 
 
 Selected_Clusters['Mean Silhoutte Values'].hist(grid=False)
@@ -2114,38 +1777,31 @@ plt.legend(loc='best')
 plt.ylabel("No. of clusters")
 
 
-# In[160]:
+# ### Exporting Cluster and Selected Cluster Data
+# 
+# #### Description:
+# - This code segment exports cluster-related data to CSV files.
+# 
+# #### Code Explanation:
+# 
+# 1. **Export Cluster List:**
+#    - The code exports the `Cluster_list` DataFrame to a GMT format file named "ClusterSetsFluxRed_062722_6_3.gmt" using tab (`\t`) as the separator.
+# 
+# 2. **Export Selected Clusters:**
+#    - The code exports the `Selected_Clusters` DataFrame to two different files:
+#      - One in GMT format named "ProductMatrix_AllClusterSets_063022_6_3.gmt" using tab (`\t`) as the separator.
+#      - Another in CSV format named "ProductMatrix_AllClusterSets_063022_6_3.csv".
+# 
+# #### Objective of This Code Segment:
+# - This code segment allows you to export cluster-related data to files in the specified formats for further analysis or sharing with others.
+# 
+# You can copy and paste this markdown into your project's `README.md` file to document the export of cluster data.
+# 
 
-
-Cluster_list
-
-
-# In[161]:
+# In[ ]:
 
 
 Cluster_list.to_csv("ClusterSetsFluxRed_062722_6_3.gmt",sep='\t')
-
-
-# In[162]:
-
-
-Selected_Clusters
-
-
-# In[163]:
-
-
 Selected_Clusters.to_csv("ProductMatrix_AllClusterSets_063022_6_3.gmt",sep='\t')
-
-
-# In[164]:
-
-
 Selected_Clusters.to_csv("ProductMatrix_AllClusterSets_063022_6_3.csv")
-
-
-# In[165]:
-
-
-Selected_Clusters
 
