@@ -65,10 +65,3 @@ The Jupyter Notebook is divided into various sections, each performing specific 
 6. **Silhouette Score Evaluation**: Calculating and analyzing the Silhouette Score to evaluate the quality of clustering.
 7. **Result Visualization**: Visualizing the results of the analysis through plots and graphs.
 
-## Contributing
-
-Contributions to this project are welcome. Please ensure to update tests as appropriate.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
