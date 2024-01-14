@@ -25,7 +25,7 @@ Our pipeline comprises the following key modules:
 * Across a Compendium of Expression Datasets - Utilizing CV 
 
 ### 2) Identifying the Prevalence of Transcriptional Regulation at the Pathway Level
-* [Supervised Approach] (https://github.com/WalhoutLab/WormClust/blob/master/2_a_SupervisedApproach/Supervised_Analysis.md)
+* [Supervised Approach](https://github.com/WalhoutLab/WormClust/blob/master/2_a_SupervisedApproach/README.md)
 * [Unsupervised Approach](https://github.com/WalhoutLab/WormClust/blob/master/2_b_UnsupervisedApproach/README.md)
 
 ### 3) Uncovering Activation/Repression Conditions of Metabolic Sub-Pathways
