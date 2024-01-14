@@ -43,7 +43,7 @@ After installing the prerequisites, you can run the Jupyter Notebook.
     jupyter notebook
     ```
 
-2. **Open the `Unsupervised_Analysis.ipynb` file in the Jupyter Notebook interface.**
+2. **Open the `Unsupervised_Analysis_6_3.ipynb` file in the Jupyter Notebook interface.**
 
 3. **Run the cells sequentially to perform the analysis.**
 
