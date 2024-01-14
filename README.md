@@ -1,41 +1,71 @@
-# <b>Systems-level transcriptional regulation of metabolism in *C.elegans*
+# **Warning- This repository is under development as we are in the process of cleaning up and organising codes. There might be missing files.**
+# Systems-level Transcriptional Regulation of Metabolism in *C.elegans*
 
- 
-  ## **Introduction**
+## Table of Contents
+1. [Introduction](#Introduction)
+2. [System Components](#System-Components)
+3. [Features](#Features)
+4. [Requirements](#Requirements)
+5. [Installation](#Installation)
+6. [Authors](#Authors)
+7. [Contributing and Contact](#Contributing-and-Contact)
 
-We developed a computational pipeline to unravel transcriptional regulation of metabolism in *C.elegans* at a systems-level. It is written mainly in Python, with parts written in MATLAB and shell script. It has been developed for a development dataset, tissue dataset and a compendium of 177 expression datasets. However, this pipeline is applicable to any expression dataset- whether RNA-Seq or microarray. It consists of following major parts:
-  
-  ### 1) Finding extent of transcriptional regulation of metabolism
-    a) During Development- Using Variation Score (VS)
-    b) Across tissues- Using Coefficient of Variation (CV)
-    c) Across compendium of expression datasets - Using CV 
-    
-  ### 2) Finding prevalence of transcriptional regulation at pathway level
-    a) Supervised approach
-    b) Unsupervised approach
-    
-  ### 3) Finding activation/ repression conditions of metabolic sub-pathways
-  ### 4) WormClust: a web application that enables gene-by-gene query of all *C.elegans* genes to associate them to metabolic (sub)-pathways. 
-    a) For all iCEL genes that are part of metabolic network model, obtain a clustered heatmap of the query gene with other closely associated metabolic network genes based on coflux and coexpression
-    b) For all non-iCEL genes, find the pathway enrichment to closely associated metabolic network model genes
-  
-  
-  ## **Features**
-### 1) Written in python
-### 2) Approches can be applied to any other organism, for which large gene expression profile compendia and high-quality metabolic network models are available, including humans.
-### 3) Provides WormClust- an online tool to evaluate the association of a given gene with the metabolic network based on similarities in gene expression, according to Nanda et al., 2022 (in review). 
 
-  
-  ## **Requirements**
-  Please find attached the requirements.txt file.
-  
-  
-  ## **Authors**
-  Shivani Nanda- https://github.com/shivani710
-  
-  
-  ## **Contact or Contributions**
-  Please contact us for reporting bugs or contributing purposes. Email contacting is encouraged. Please send to Shivani Nanda(shivani.nanda@umassmed.edu) or Safak Yilmaz(LutfuSSafak.Yilmaz@umassmed.edu).<br/>Project link: https://github.com/WalhoutLab/WormClust 
-  <br> WormClust web server link- http://wormflux.umassmed.edu/WormClust/wormclust.php
+## Introduction
+
+Welcome to our project! We've constructed a computational pipeline aimed at elucidating the transcriptional regulation of metabolism in *C.elegans* at a systems level. Primarily written in Python, this pipeline also utilizes components of MATLAB and shell script. It has been rigorously developed for a development dataset, tissue dataset, and a compendium of 177 expression datasets. Importantly, our pipeline can be applied to any expression dataset, whether it's RNA-Seq or microarray.
+
+## System Components
+
+Our pipeline comprises the following key modules:
+
+### 1) Determining the Extent of Transcriptional Regulation of Metabolism
+* During Development - Utilizing Variation Score (VS)
+* Across Tissues - Utilizing Coefficient of Variation (CV)
+* Across a Compendium of Expression Datasets - Utilizing CV 
+
+### 2) Identifying the Prevalence of Transcriptional Regulation at the Pathway Level
+* Supervised Approach
+* Unsupervised Approach
+
+### 3) Uncovering Activation/Repression Conditions of Metabolic Sub-Pathways
+
+### 4) WormClust: A Gene Query Web Application
+* Allows gene-by-gene queries of all *C.elegans* genes to associate them with metabolic (sub)-pathways.
+* For all iCEL genes in the metabolic network model, it generates a clustered heatmap of the query gene with other closely associated metabolic network genes based on coflux and coexpression.
+* For all non-iCEL genes, it identifies the pathway enrichment of closely associated metabolic network model genes.
+
+## Features
+
+* **Python-Centric:** Our pipeline is primarily written in Python, ensuring high readability and maintainability.
+* **Broad Applicability:** The methodologies implemented in this pipeline can be extrapolated to any organism for which large gene expression profile compendia and high-quality metabolic network models are available, including humans.
+* **Interactive Web Tool - WormClust:** This feature enables users to assess the association of a specific gene with the metabolic network based on similarities in gene expression. It is consistent with the methodology proposed by [Nanda et al., 2023](https://www.embopress.org/doi/full/10.15252/msb.202211443).
+
+## Requirements
+
+Please refer to the attached `requirements.txt` file for software dependencies.
+
+## Installation
+
+The repository can be cloned and the dependencies installed as follows:
+
+1. Clone the repository: `git clone https://github.com/WalhoutLab/WormClust.git`
+2. Navigate to the cloned directory: `cd WormClust`
+3. Install the required dependencies: `pip install -r requirements.txt`
+
+## Authors
+
+* Shivani Nanda - [GitHub](https://github.com/shivani710)
+* Safak Yilmaz - Email: LutfuSSafak.Yilmaz@umassmed.edu
+
+## Contributing and Contact
+
+For bug reports, contributions, or further queries, please reach out to us. Email communication is preferred. Contact Shivani Nanda (shivani.nanda@umassmed.edu) or Safak Yilmaz (LutfuSSafak.Yilmaz@umassmed.edu). 
+
+Project Link: [https://github.com/WalhoutLab/WormClust](https://github.com/WalhoutLab/WormClust)
+
+WormClust Web Server Link: [http://wormflux.umassmed.edu/WormClust/wormclust.php](http://wormflux.umassmed.edu/WormClust/wormclust.php)
+
+
   
   
